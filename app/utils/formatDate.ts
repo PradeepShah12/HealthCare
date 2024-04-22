@@ -1,15 +1,10 @@
+import { Locale, format, parseISO } from "date-fns"
 import I18n from "i18n-js"
 
-// Note the syntax of these imports from the date-fns library.
-// If you import with the syntax: import { format } from "date-fns" the ENTIRE library
-// will be included in your production bundle (even if you only use one function).
-// This is because react-native does not support tree-shaking.
-import type { Locale } from "date-fns"
-import format from "date-fns/format"
-import parseISO from "date-fns/parseISO"
 import ar from "date-fns/locale/ar-SA"
 import ko from "date-fns/locale/ko"
 import en from "date-fns/locale/en-US"
+import moment from 'moment';
 
 type Options = Parameters<typeof format>[2]
 
@@ -26,3 +21,28 @@ export const formatDate = (date: string, dateFormat?: string, options?: Options)
   }
   return format(parseISO(date), dateFormat ?? "MMM dd, yyyy", dateOptions)
 }
+
+
+
+
+export const TimeDiffrence = t2 => {
+  const t1 = new Date().getTime();
+  const ts = (t1 - t2.getTime()) / 1000;
+
+  const d = Math.floor(ts / (3600 * 24));
+  const h = Math.floor((ts % (3600 * 24)) / 3600);
+  const m = Math.floor((ts % 3600) / 60);
+  const s = Math.floor(ts % 60);
+
+  if (d > 2) {
+    return moment(t2).format('DD MMM');
+  } else if (d >= 1) {
+    return `${d} ${d === 1 ? 'day' : 'days'} ago`;
+  } else if (h >= 1) {
+    return `${h} ${h === 1 ? 'hr' : 'hrs'} ago`;
+  } else if (m >= 1) {
+    return `${m} ${m === 1 ? 'min' : 'mins'} ago`;
+  } else {
+    return `${s} ${s === 1 ? 'second' : 'seconds'} ago`;
+  }
+};

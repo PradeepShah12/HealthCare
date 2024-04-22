@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   View,
-  ViewProps,
   ViewStyle,
 } from "react-native"
 import { colors, spacing } from "../theme"
@@ -119,9 +118,8 @@ interface CardProps extends TouchableOpacityProps {
 /**
  * Cards are useful for displaying related information in a contained way.
  * If a ListItem displays content horizontally, a Card can be used to display content vertically.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/Card/}
- * @param {CardProps} props - The props for the `Card` component.
- * @returns {JSX.Element} The rendered `Card` component.
+ *
+ * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Card.md)
  */
 export function Card(props: CardProps) {
   const {
@@ -150,42 +148,40 @@ export function Card(props: CardProps) {
     ...WrapperProps
   } = props
 
-  const preset: Presets = props.preset ?? "default"
+  const preset: Presets = $containerPresets[props.preset] ? props.preset : "default"
   const isPressable = !!WrapperProps.onPress
   const isHeadingPresent = !!(HeadingComponent || heading || headingTx)
   const isContentPresent = !!(ContentComponent || content || contentTx)
   const isFooterPresent = !!(FooterComponent || footer || footerTx)
 
-  const Wrapper = (isPressable ? TouchableOpacity : View) as ComponentType<
-    TouchableOpacityProps | ViewProps
-  >
+  const Wrapper: ComponentType<TouchableOpacityProps> = isPressable ? TouchableOpacity : View
   const HeaderContentWrapper = verticalAlignment === "force-footer-bottom" ? View : Fragment
 
   const $containerStyle = [$containerPresets[preset], $containerStyleOverride]
   const $headingStyle = [
     $headingPresets[preset],
-    (isFooterPresent || isContentPresent) && { marginBottom: spacing.xxxs },
+    (isFooterPresent || isContentPresent) && { marginBottom: spacing.micro },
     $headingStyleOverride,
     HeadingTextProps?.style,
   ]
   const $contentStyle = [
     $contentPresets[preset],
-    isHeadingPresent && { marginTop: spacing.xxxs },
-    isFooterPresent && { marginBottom: spacing.xxxs },
+    isHeadingPresent && { marginTop: spacing.micro },
+    isFooterPresent && { marginBottom: spacing.micro },
     $contentStyleOverride,
     ContentTextProps?.style,
   ]
   const $footerStyle = [
     $footerPresets[preset],
-    (isHeadingPresent || isContentPresent) && { marginTop: spacing.xxxs },
+    (isHeadingPresent || isContentPresent) && { marginTop: spacing.micro },
     $footerStyleOverride,
     FooterTextProps?.style,
   ]
   const $alignmentWrapperStyle = [
     $alignmentWrapper,
     { justifyContent: $alignmentWrapperFlexOptions[verticalAlignment] },
-    LeftComponent && { marginStart: spacing.md },
-    RightComponent && { marginEnd: spacing.md },
+    LeftComponent && { marginStart: spacing.medium },
+    RightComponent && { marginEnd: spacing.medium },
   ]
 
   return (
@@ -244,15 +240,15 @@ export function Card(props: CardProps) {
 }
 
 const $containerBase: ViewStyle = {
-  borderRadius: spacing.md,
-  padding: spacing.xs,
-  borderWidth: 1,
-  shadowColor: colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 12 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12.81,
+  borderRadius: 5,
+  padding: spacing.small,
+  // borderWidth: 1,
+  // shadowColor: colors.palette.primary100,
+  // shadowOffset: { width: 0, height: 12 },
+  // shadowOpacity: 0.08,
+  // shadowRadius: 12.81,
   elevation: 16,
-  minHeight: 96,
+  // minHeight: 96,
   flexDirection: "row",
 }
 

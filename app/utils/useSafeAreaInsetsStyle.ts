@@ -1,3 +1,4 @@
+import { FlexStyle } from "react-native"
 import { Edge, useSafeAreaInsets } from "react-native-safe-area-context"
 
 export type ExtendedEdge = Edge | "start" | "end"
@@ -11,36 +12,33 @@ const propertySuffixMap = {
   end: "End",
 }
 
-const edgeInsetMap: Record<string, Edge> = {
+const edgeInsetMap = {
   start: "left",
   end: "right",
 }
 
-export type SafeAreaInsetsStyle<
-  Property extends "padding" | "margin" = "padding",
-  Edges extends Array<ExtendedEdge> = Array<ExtendedEdge>,
-> = {
-  [K in Edges[number] as `${Property}${Capitalize<K>}`]: number
-}
-
 /**
  * A hook that can be used to create a safe-area-aware style object that can be passed directly to a View.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/utility/useSafeAreaInsetsStyle/}
- * @param {ExtendedEdge[]} safeAreaEdges - The edges to apply the safe area insets to.
- * @param {"padding" | "margin"} property - The property to apply the safe area insets to.
- * @returns {SafeAreaInsetsStyle<Property, Edges>} - The style object with the safe area insets applied.
+ *
+ * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Utils-useSafeAreaInsetsStyle.md)
  */
-export function useSafeAreaInsetsStyle<
-  Property extends "padding" | "margin" = "padding",
-  Edges extends Array<ExtendedEdge> = [],
->(
-  safeAreaEdges: Edges = [] as unknown as Edges,
-  property: Property = "padding" as Property,
-): SafeAreaInsetsStyle<Property, Edges> {
+export function useSafeAreaInsetsStyle(
+  safeAreaEdges: ExtendedEdge[] = [],
+  property: "padding" | "margin" = "padding",
+): Pick<
+  FlexStyle,
+  | "marginBottom"
+  | "marginEnd"
+  | "marginStart"
+  | "marginTop"
+  | "paddingBottom"
+  | "paddingEnd"
+  | "paddingStart"
+  | "paddingTop"
+> {
   const insets = useSafeAreaInsets()
 
   return safeAreaEdges.reduce((acc, e) => {
-    const value = edgeInsetMap[e] ?? e
-    return { ...acc, [`${property}${propertySuffixMap[e]}`]: insets[value] }
-  }, {}) as SafeAreaInsetsStyle<Property, Edges>
+    return { ...acc, [`${property}${propertySuffixMap[e]}`]: insets[edgeInsetMap[e] ?? e] }
+  }, {})
 }

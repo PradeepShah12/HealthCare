@@ -1,84 +1,69 @@
-// TODO: write documentation for colors and palette in own markdown file and add links from here
-
 const palette = {
   neutral100: "#FFFFFF",
-  neutral200: "#F4F2F1",
-  neutral300: "#D7CEC9",
-  neutral400: "#B6ACA6",
-  neutral500: "#978F8A",
-  neutral600: "#564E4A",
-  neutral700: "#3C3836",
-  neutral800: "#191015",
-  neutral900: "#000000",
+  neutral200: "#F1F2ED",  // Light gray
+  neutral200trans: "#66000000",  // Light gray
 
-  primary100: "#F4E0D9",
-  primary200: "#E8C1B4",
-  primary300: "#DDA28E",
-  primary400: "#D28468",
-  primary500: "#C76542",
-  primary600: "#A54F31",
+  neutral300: "#C8C7CC",  // Slightly darker gray
+  neutral400: "#000000",  // Black for text
 
-  secondary100: "#DCDDE9",
-  secondary200: "#BCC0D6",
-  secondary300: "#9196B9",
-  secondary400: "#626894",
-  secondary500: "#41476E",
+  primary100: "#f1c013",
+  primary200: "#ffd244",  // Adjusted primary 200
+  primary300: "#FFF7D2",  // Adjusted primary 300
+  primary400: "#fcf8e6",  // Adjusted primary 400
+  primary500: "#fcf8e6",  // Adjusted primary 400
 
-  accent100: "#FFEED4",
-  accent200: "#FFE1B2",
-  accent300: "#FDD495",
-  accent400: "#FBC878",
-  accent500: "#FFBB50",
+  secondary100: "#215E7C",  // Set secondary color to #3db0e1
+  secondary200: "#60A4C6",  // Adjusted lighter shade
+  secondary300: "#60A4C6",
+  secondary400: "#60A4C6",
+  secondary500: "#8D3E50",
+  secondary600: "#B22518",
+  secondary700: "#4267B2",
 
-  angry100: "#F2D6CD",
-  angry500: "#C03403",
-
-  overlay20: "rgba(25, 16, 21, 0.2)",
-  overlay50: "rgba(25, 16, 21, 0.5)",
-} as const
+  shadow: "#00000040",
+  activeButton: "#027368",
+  activeButtonSemi: "#02736866",
+  black: "#000000",
+  grey: "#D9D9D9",
+  Map_Primary: "#6598B8",
+  coverText: "#D4D4D4",
+  borderLine: "#D1D1D1",
+  messageBox: "#D2D2D2",
+  danger: "#F24130",
+  green:"#099000"
+} as const;
 
 export const colors = {
-  /**
-   * The palette is available to use, but prefer using the name.
-   * This is only included for rare, one-off cases. Try to use
-   * semantic names as much as possible.
-   */
   palette,
-  /**
-   * A helper for making something see-thru.
-   */
   transparent: "rgba(0, 0, 0, 0)",
-  /**
-   * The default text color in many components.
-   */
-  text: palette.neutral800,
-  /**
-   * Secondary text information.
-   */
-  textDim: palette.neutral600,
-  /**
-   * The default color of the screen background.
-   */
+  text: palette.neutral400,
+  inactiveText: palette.neutral300,
   background: palette.neutral200,
-  /**
-   * The default border color.
-   */
-  border: palette.neutral400,
-  /**
-   * The main tinting color.
-   */
-  tint: palette.primary500,
-  /**
-   * A subtle color used for lines.
-   */
-  separator: palette.neutral300,
-  /**
-   * Error messages.
-   */
-  error: palette.angry500,
-  /**
-   * Error Background.
-   *
-   */
-  errorBackground: palette.angry100,
-}
+  border: palette.primary200,
+  separator: "#C8C8C8",
+  error: palette.secondary500,
+  textFieldBackground: "rgba(246, 246, 246, 1)",
+  textFieldError: "rgba(141, 62, 80, 0.5)",
+  calenderAvailable: "rgba(2, 115, 104, 0.5)",
+  cta01: palette.primary200,
+  cardWidget: palette.neutral200,
+  cta02: palette.primary100,
+  messageBox: palette.neutral300,
+  ctaInactive: "#ECD1C8",
+  navInactive: palette.neutral100,
+  mapRadius: "rgba(101, 152, 184, 0.5)",
+  mapPrimary: "#6598B8",
+  shadow: palette.shadow,
+  activeButton: palette.activeButton,
+  black: palette.black,
+  searchbar: palette.grey,
+  inputBackground: '#EEEEEE',
+  inputBorder: '#d0d0d0',
+  bg_main: '#EEEEEE',
+
+  Map_Primary: palette.Map_Primary,
+  coverText: palette.coverText,
+  borderLine: palette.primary200,
+  danger: palette.danger,
+  activeButtonSemi: palette.activeButtonSemi,
+};

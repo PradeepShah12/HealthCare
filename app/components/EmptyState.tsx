@@ -101,43 +101,35 @@ interface EmptyStateProps {
   ButtonProps?: ButtonProps
 }
 
-interface EmptyStatePresetItem {
-  imageSource: ImageProps["source"]
-  heading: TextProps["text"]
-  content: TextProps["text"]
-  button: TextProps["text"]
-}
-
 const EmptyStatePresets = {
   generic: {
     imageSource: sadFace,
     heading: translate("emptyStateComponent.generic.heading"),
     content: translate("emptyStateComponent.generic.content"),
     button: translate("emptyStateComponent.generic.button"),
-  } as EmptyStatePresetItem,
+  },
 } as const
 
 /**
  * A component to use when there is no data to display. It can be utilized to direct the user what to do next.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/EmptyState/}
- * @param {EmptyStateProps} props - The props for the `EmptyState` component.
- * @returns {JSX.Element} The rendered `EmptyState` component.
+ *
+ * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-EmptyState.md)
  */
 export function EmptyState(props: EmptyStateProps) {
-  const preset = EmptyStatePresets[props.preset ?? "generic"]
+  const preset = EmptyStatePresets[props.preset] ? EmptyStatePresets[props.preset] : undefined
 
   const {
-    button = preset.button,
+    button = preset?.button,
     buttonTx,
     buttonOnPress,
     buttonTxOptions,
-    content = preset.content,
+    content = preset?.content,
     contentTx,
     contentTxOptions,
-    heading = preset.heading,
+    heading = preset?.heading,
     headingTx,
     headingTxOptions,
-    imageSource = preset.imageSource,
+    imageSource = preset?.imageSource,
     style: $containerStyleOverride,
     buttonStyle: $buttonStyleOverride,
     buttonTextStyle: $buttonTextStyleOverride,
@@ -158,26 +150,26 @@ export function EmptyState(props: EmptyStateProps) {
   const $containerStyles = [$containerStyleOverride]
   const $imageStyles = [
     $image,
-    (isHeadingPresent || isContentPresent || isButtonPresent) && { marginBottom: spacing.xxxs },
+    (isHeadingPresent || isContentPresent || isButtonPresent) && { marginBottom: spacing.micro },
     $imageStyleOverride,
     ImageProps?.style,
   ]
   const $headingStyles = [
     $heading,
-    isImagePresent && { marginTop: spacing.xxxs },
-    (isContentPresent || isButtonPresent) && { marginBottom: spacing.xxxs },
+    isImagePresent && { marginTop: spacing.micro },
+    (isContentPresent || isButtonPresent) && { marginBottom: spacing.micro },
     $headingStyleOverride,
     HeadingTextProps?.style,
   ]
   const $contentStyles = [
     $content,
-    (isImagePresent || isHeadingPresent) && { marginTop: spacing.xxxs },
-    isButtonPresent && { marginBottom: spacing.xxxs },
+    (isImagePresent || isHeadingPresent) && { marginTop: spacing.micro },
+    isButtonPresent && { marginBottom: spacing.micro },
     $contentStyleOverride,
     ContentTextProps?.style,
   ]
   const $buttonStyles = [
-    (isImagePresent || isHeadingPresent || isContentPresent) && { marginTop: spacing.xl },
+    (isImagePresent || isHeadingPresent || isContentPresent) && { marginTop: spacing.extraLarge },
     $buttonStyleOverride,
     ButtonProps?.style,
   ]
@@ -223,5 +215,5 @@ export function EmptyState(props: EmptyStateProps) {
 }
 
 const $image: ImageStyle = { alignSelf: "center" }
-const $heading: TextStyle = { textAlign: "center", paddingHorizontal: spacing.lg }
-const $content: TextStyle = { textAlign: "center", paddingHorizontal: spacing.lg }
+const $heading: TextStyle = { textAlign: "center", paddingHorizontal: spacing.large }
+const $content: TextStyle = { textAlign: "center", paddingHorizontal: spacing.large }

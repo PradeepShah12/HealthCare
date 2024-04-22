@@ -7,7 +7,7 @@ import {
   TextStyle,
   ViewStyle,
 } from "react-native"
-import { colors, spacing, typography } from "../theme"
+import { colors, spacing,  } from "../theme"
 import { Text, TextProps } from "./Text"
 
 type Presets = keyof typeof $viewPresets
@@ -15,7 +15,6 @@ type Presets = keyof typeof $viewPresets
 export interface ButtonAccessoryProps {
   style: StyleProp<any>
   pressableState: PressableStateCallbackType
-  disabled?: boolean
 }
 
 export interface ButtonProps extends PressableProps {
@@ -49,10 +48,6 @@ export interface ButtonProps extends PressableProps {
    */
   pressedTextStyle?: StyleProp<TextStyle>
   /**
-   * An optional style override for the button text when in the "disabled" state.
-   */
-  disabledTextStyle?: StyleProp<TextStyle>
-  /**
    * One of the different types of button presets.
    */
   preset?: Presets
@@ -70,30 +65,13 @@ export interface ButtonProps extends PressableProps {
    * Children components.
    */
   children?: React.ReactNode
-  /**
-   * disabled prop, accessed directly for declarative styling reasons.
-   * https://reactnative.dev/docs/pressable#disabled
-   */
-  disabled?: boolean
-  /**
-   * An optional style override for the disabled state
-   */
-  disabledStyle?: StyleProp<ViewStyle>
 }
 
 /**
  * A component that allows users to take actions and make choices.
  * Wraps the Text component with a Pressable component.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/Button/}
- * @param {ButtonProps} props - The props for the `Button` component.
- * @returns {JSX.Element} The rendered `Button` component.
- * @example
- * <Button
- *   tx="common.ok"
- *   style={styles.button}
- *   textStyle={styles.buttonText}
- *   onPress={handleButtonPress}
- * />
+ *
+ * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Button.md)
  */
 export function Button(props: ButtonProps) {
   const {
@@ -104,67 +82,40 @@ export function Button(props: ButtonProps) {
     pressedStyle: $pressedViewStyleOverride,
     textStyle: $textStyleOverride,
     pressedTextStyle: $pressedTextStyleOverride,
-    disabledTextStyle: $disabledTextStyleOverride,
     children,
     RightAccessory,
     LeftAccessory,
-    disabled,
-    disabledStyle: $disabledViewStyleOverride,
     ...rest
   } = props
 
-  const preset: Presets = props.preset ?? "default"
-  /**
-   * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
-   * @param {boolean} root0.pressed - The pressed state.
-   * @returns {StyleProp<ViewStyle>} The view style based on the pressed state.
-   */
-  function $viewStyle({ pressed }: PressableStateCallbackType): StyleProp<ViewStyle> {
+  const preset: Presets = $viewPresets[props.preset] ? props.preset : "default"
+  function $viewStyle({ pressed }) {
     return [
       $viewPresets[preset],
       $viewStyleOverride,
       !!pressed && [$pressedViewPresets[preset], $pressedViewStyleOverride],
-      !!disabled && $disabledViewStyleOverride,
     ]
   }
-  /**
-   * @param {PressableStateCallbackType} root0 - The root object containing the pressed state.
-   * @param {boolean} root0.pressed - The pressed state.
-   * @returns {StyleProp<TextStyle>} The text style based on the pressed state.
-   */
-  function $textStyle({ pressed }: PressableStateCallbackType): StyleProp<TextStyle> {
+  function $textStyle({ pressed }) {
     return [
       $textPresets[preset],
       $textStyleOverride,
       !!pressed && [$pressedTextPresets[preset], $pressedTextStyleOverride],
-      !!disabled && $disabledTextStyleOverride,
     ]
   }
 
   return (
-    <Pressable
-      style={$viewStyle}
-      accessibilityRole="button"
-      accessibilityState={{ disabled: !!disabled }}
-      {...rest}
-      disabled={disabled}
-    >
+    <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
       {(state) => (
         <>
-          {!!LeftAccessory && (
-            <LeftAccessory style={$leftAccessoryStyle} pressableState={state} disabled={disabled} />
-          )}
+          {!!LeftAccessory && <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />}
 
           <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
             {children}
           </Text>
 
           {!!RightAccessory && (
-            <RightAccessory
-              style={$rightAccessoryStyle}
-              pressableState={state}
-              disabled={disabled}
-            />
+            <RightAccessory style={$rightAccessoryStyle} pressableState={state} />
           )}
         </>
       )}
@@ -173,44 +124,53 @@ export function Button(props: ButtonProps) {
 }
 
 const $baseViewStyle: ViewStyle = {
-  minHeight: 56,
-  borderRadius: 4,
+  minHeight: 45,
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "row",
-  paddingVertical: spacing.sm,
-  paddingHorizontal: spacing.sm,
+  paddingVertical: spacing.small,
+  paddingHorizontal: spacing.small,
   overflow: "hidden",
 }
 
 const $baseTextStyle: TextStyle = {
   fontSize: 16,
-  lineHeight: 20,
-  fontFamily: typography.primary.medium,
+  lineHeight: 19.2,
+  fontWeight: "400",
   textAlign: "center",
   flexShrink: 1,
   flexGrow: 0,
   zIndex: 2,
+  color: colors.text,
 }
 
-const $rightAccessoryStyle: ViewStyle = { marginStart: spacing.xs, zIndex: 1 }
-const $leftAccessoryStyle: ViewStyle = { marginEnd: spacing.xs, zIndex: 1 }
+const $rightAccessoryStyle: ViewStyle = { marginStart: spacing.extraSmall, zIndex: 1 }
+const $leftAccessoryStyle: ViewStyle = { marginEnd: spacing.extraSmall, zIndex: 1 }
 
 const $viewPresets = {
   default: [
     $baseViewStyle,
     {
       borderWidth: 1,
-      borderColor: colors.palette.neutral400,
+      borderColor: colors.cta01,
       backgroundColor: colors.palette.neutral100,
+      borderRadius:25,
+
     },
   ] as StyleProp<ViewStyle>,
 
-  filled: [$baseViewStyle, { backgroundColor: colors.palette.neutral300 }] as StyleProp<ViewStyle>,
+  filled: [
+    $baseViewStyle,
+    {
+      backgroundColor: colors.cta01,
+      borderRadius:25,
+
+    },
+  ] as StyleProp<ViewStyle>,
 
   reversed: [
     $baseViewStyle,
-    { backgroundColor: colors.palette.neutral800 },
+    { backgroundColor: colors.palette.neutral200 },
   ] as StyleProp<ViewStyle>,
 }
 
@@ -222,8 +182,8 @@ const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
 
 const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
   default: { backgroundColor: colors.palette.neutral200 },
-  filled: { backgroundColor: colors.palette.neutral400 },
-  reversed: { backgroundColor: colors.palette.neutral700 },
+  filled: { backgroundColor: colors.palette.neutral300 },
+  reversed: { backgroundColor: colors.palette.neutral400 },
 }
 
 const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {

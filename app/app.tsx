@@ -22,6 +22,8 @@ import { useFonts } from "expo-font"
 import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
+import { PersistGate } from "redux-persist/lib/integration/react"
+
 import { useInitialRootStore } from "./models"
 import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { ErrorBoundary } from "./screens/ErrorScreen/ErrorBoundary"
@@ -29,9 +31,15 @@ import * as storage from "./utils/storage"
 import { customFontsToLoad } from "./theme"
 import Config from "./config"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { ViewStyle } from "react-native"
+import { NativeModules, Platform, StatusBar, ViewStyle } from "react-native"
+import { persistor, store } from "./store"
+import { Provider } from "react-redux"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
+if (__DEV__ && Platform.OS === "ios") {
+  NativeModules.DevSettings.setIsDebuggingRemotely(true)
+}
 
 // Web linking configuration
 const prefix = Linking.createURL("/")
@@ -53,6 +61,26 @@ const config = {
     },
   },
 }
+const queryClientConfig = {
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      // staleTime: 1000 * 30,// 30seconds
+      // cacheTime: 1000 * 30, //30 seconds
+      // refetchOnMount: "always",
+      // refetchOnWindowFocus: "always",
+      // refetchOnReconnect: "always",
+      // refetchInterval: 1000 * 30, //30 seconds
+      refetchIntervalInBackground: false,
+      suspense: false,
+      
+    },
+    mutations: {
+      retry: 0,
+    },
+  },
+}
+const queryClient = new QueryClient(queryClientConfig)
 
 interface AppProps {
   hideSplashScreen: () => Promise<boolean>
@@ -98,6 +126,17 @@ function App(props: AppProps) {
 
   // otherwise, we're ready to render the app
   return (
+
+    <Provider store={store}>
+          <StatusBar
+        animated={true}
+        backgroundColor="red"
+        barStyle={"dark-content"}
+        // showHideTransition={statusBarTransition}
+        // hidden={hidden}
+      />
+    <PersistGate loading={null} persistor={persistor}>
+      <QueryClientProvider client={queryClient} >
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <GestureHandlerRootView style={$container}>
@@ -109,6 +148,9 @@ function App(props: AppProps) {
         </GestureHandlerRootView>
       </ErrorBoundary>
     </SafeAreaProvider>
+    </QueryClientProvider>
+    </PersistGate>
+    </Provider>
   )
 }
 

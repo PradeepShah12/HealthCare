@@ -1,7 +1,12 @@
 import React, { useLayoutEffect, useState } from "react"
-import { Image, ImageProps, ImageURISource, Platform } from "react-native"
+import { ActivityIndicator, Image, ImageURISource, Platform, View } from "react-native"
+import FastImage, { FastImageProps } from "react-native-fast-image"
+import { $activityIndicator } from "../theme"
+import { placeHolder } from "../utils/constants"
 
-export interface AutoImageProps extends ImageProps {
+// TODO: document new props
+export interface AutoImageProps extends FastImageProps {
+  showLoader?: boolean
   /**
    * How wide should the image be?
    */
@@ -20,13 +25,11 @@ export interface AutoImageProps extends ImageProps {
  * How is this different from `resizeMode: 'contain'`? Firstly, you can
  * specify only one side's size (not both). Secondly, the image will scale to fit
  * the desired dimensions instead of just being contained within its image-container.
- * @param {number} remoteUri - The URI of the remote image.
- * @param {number} dimensions - The desired dimensions of the image. If not provided, the original dimensions will be returned.
- * @returns {[number, number]} - The scaled dimensions of the image.
+ *
  */
 export function useAutoImage(
   remoteUri: string,
-  dimensions?: [maxWidth?: number, maxHeight?: number],
+  dimensions?: [maxWidth: number, maxHeight: number],
 ): [width: number, height: number] {
   const [[remoteWidth, remoteHeight], setRemoteImageDimensions] = useState([0, 0])
   const remoteAspectRatio = remoteWidth / remoteHeight
@@ -54,21 +57,42 @@ export function useAutoImage(
 
 /**
  * An Image component that automatically sizes a remote or data-uri image.
- * @see [Documentation and Examples]{@link https://docs.infinite.red/ignite-cli/boilerplate/components/AutoImage/}
- * @param {AutoImageProps} props - The props for the `AutoImage` component.
- * @returns {JSX.Element} The rendered `AutoImage` component.
+ *
+ * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-AutoImage.md)
  */
 export function AutoImage(props: AutoImageProps) {
-  const { maxWidth, maxHeight, ...ImageProps } = props
-  const source = props.source as ImageURISource
+  const { maxWidth, maxHeight, showLoader, ...FastImageProps } = props
+  const [tempSource,setTempSource]=useState( props.source)
+  // const source = props.source as  ImageURISource
 
-  const [width, height] = useAutoImage(
+  const [loading, setLoading] = useState(false)
+
+  const [_width, height] = useAutoImage(
     Platform.select({
-      web: (source?.uri as string) ?? (source as string),
-      default: source?.uri as string,
+      web: (tempSource?.uri as string) ?? (tempSource as string),
+      default: tempSource?.uri as string,
     }),
     [maxWidth, maxHeight],
   )
 
-  return <Image {...ImageProps} style={[{ width, height }, props.style]} />
+  
+  return (
+    <>
+      {loading && showLoader && (
+        <View style={[$activityIndicator, { maxHeight, maxWidth }]}>
+          <ActivityIndicator />
+        </View>
+      )}
+      <FastImage
+        {...FastImageProps}
+        source={tempSource}
+        style={[{ width:maxWidth, height }, props.style]}
+        onLoadStart={() => setLoading(true)}
+        onLoad={() => setLoading(false)}
+        onLoadEnd={() => setLoading(false)}
+        resizeMode="cover"
+        onError={()=> {setTempSource({uri:placeHolder})}}
+      />
+    </>
+  )
 }

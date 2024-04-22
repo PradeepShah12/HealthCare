@@ -19,4 +19,11 @@ module.exports = {
       unstable_reactLegacyComponentNames: ["CellContainer", "AutoLayoutView"],
     },
   },
+  dependencies: {
+    'react-native-vector-icons': {
+      platforms: {
+        ios: null,
+      },
+    },
+  },
 }

@@ -20,6 +20,9 @@ import { useStores } from "../models"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+import { AuthStack } from "./AuthStack"
+import { LoggedInNavigator } from "./LoggedInNavigator"
+import { useAppSelector } from "app/store"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -39,7 +42,12 @@ export type AppStackParamList = {
   Login: undefined
   Demo: NavigatorScreenParams<DemoTabParamList>
   // 🔥 Your screens go here
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  LoggedInNavigator: undefined
+	StepTracker: undefined
+	HeartRateMonitor: undefined
+	SleepTracker: undefined
+	Setting: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -57,29 +65,34 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
-  const {
-    authenticationStore: { isAuthenticated },
-  } = useStores()
+const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 
+
+  console.log(isAuthenticated,'is authenticatedd ')
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
-      initialRouteName={isAuthenticated ? "Welcome" : "Login"}
+      initialRouteName={isAuthenticated ? "LoggedInNavigator" : "Demo"}
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
+          <Stack.Screen name="LoggedInNavigator" component={LoggedInNavigator} />
 
-          <Stack.Screen name="Demo" component={DemoNavigator} />
         </>
       ) : (
         <>
-          <Stack.Screen name="Login" component={Screens.LoginScreen} />
+                  <Stack.Screen name="Demo" component={AuthStack} />
+
+          {/* <Stack.Screen name="Login" component={Screens.LoginScreen} /> */}
         </>
       )}
 
       {/** 🔥 Your screens go here */}
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+			<Stack.Screen name="StepTracker" component={Screens.StepTrackerScreen} />
+			<Stack.Screen name="HeartRateMonitor" component={Screens.HeartRateMonitorScreen} />
+			<Stack.Screen name="SleepTracker" component={Screens.SleepTrackerScreen} />
+			<Stack.Screen name="Setting" component={Screens.SettingScreen} />
+			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })
