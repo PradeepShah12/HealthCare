@@ -193,7 +193,7 @@ function ScreenWithScrolling(props: ScreenProps) {
 
 export function Screen(props: ScreenProps) {
   const {
-    backgroundColor = colors.palette.neutral200,
+    backgroundColor = colors.palette.neutral100,
     KeyboardAvoidingViewProps,
     keyboardOffset = 0,
     safeAreaEdges,

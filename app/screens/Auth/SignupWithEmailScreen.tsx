@@ -1,10 +1,14 @@
 import React, { FC, useRef, useState } from "react"
 import { Modalize } from 'react-native-modalize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import { Keyboard, Pressable, View, ViewStyle } from "react-native"
 import { AutoImage, Button, Screen, Spacer, Text, TextField } from "../../components"
-import { colors, spacing } from "../../theme"
+import { $globalViewStyles, colors, spacing } from "../../theme"
 
 import * as Yup from "yup"
 import { Formik } from "formik"
@@ -30,7 +34,7 @@ interface JoinWithEmail {
   phoneNumber: string
 }
 
-interface SignUpWithEmailScreenProps extends AuthStackScreenProps<"SignUpWithEmail"> {}
+interface SignUpWithEmailScreenProps extends AuthStackScreenProps<"SignUpWithEmail"> { }
 
 const validation = Yup.object().shape({
   fullName: Yup.string().required("Full Name is required"),
@@ -41,7 +45,7 @@ const validation = Yup.object().shape({
 
 export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => {
   const modalizeRef = useRef<Modalize>(null);
-  const [otp,setOtp]=useState<string>('1')
+  const [otp, setOtp] = useState<string>('1')
   const _navigation = props.navigation
   const formInitialValues: JoinWithEmail = {
     fullName: "",
@@ -52,10 +56,10 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
 
   const dispatch = useAppDispatch()
 
-  const { mutate: invite, isPending:initationPending } = useMutation({
+  const { mutate: invite, isPending: initationPending } = useMutation({
     mutationFn: (body: JoinWithEmail) => AuthService.invite(body),
     onSuccess: async (response) => {
-      if(response?.message){
+      if (response?.message) {
         dispatch(setSuccess({
           errorMessage: response?.message,
           isSnackBarVisible: true
@@ -83,14 +87,16 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
 
   return (
     <Screen style={$root} contentContainerStyle={$rootContainer} preset="scroll" safeAreaEdges={["top", "bottom"]}>
-      <View>
+      <View style={$globalViewStyles.center}>
         <Spacer size="medium" />
         <LogoTextHeader />
-        <Text tx="auth.signup.joinWithEmail" preset="h1" />
-        <Spacer size="medium" />
+        <Text tx="auth.signup.joinWithEmail" preset="h3bold" />
+        <Spacer size="tiny" />
         <Text tx="auth.signup.enterInformation" preset="inactive" />
       </View>
-      <AutoImage source={Logo} style={$imageStyle} />
+      <Spacer size="huge" />
+
+      {/* <AutoImage source={Logo} style={$imageStyle} /> */}
       <View>
         <Formik
           initialValues={formInitialValues}
@@ -104,7 +110,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
             <View>
-              <TextField
+              {/* <TextField
                 labelTx="common.fullName"
                 value={values.fullName}
                 containerStyle={$textInputStyle}
@@ -112,7 +118,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
                 status={errors.fullName ? "error" : null}
                 helper={errors.fullName}
                 onBlur={handleBlur("fullName")}
-              />
+              /> */}
               <TextField
                 labelTx="common.email"
                 value={values.email}
@@ -123,7 +129,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
                 onBlur={handleBlur("email")}
                 keyboardType="email-address"
               />
-              <TextField
+              {/* <TextField
                 labelTx="common.username"
                 value={values.username}
                 containerStyle={$textInputStyle}
@@ -141,7 +147,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
                 helper={errors.phoneNumber}
                 onBlur={handleBlur("phoneNumber")}
                 keyboardType="phone-pad"
-              />
+              /> */}
               <Button
                 preset="filled"
                 tx={initationPending ? "common.loading" : "auth.signup.createAccount"}
@@ -151,6 +157,19 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
             </View>
           )}
         </Formik>
+
+        <Spacer size="medium" />
+        <View style={$divider}>
+          <View style={$line} />
+          <Text tx="common.or" preset="inactive" />
+          <View style={$line} />
+        </View>
+        <Spacer size="small" />
+        <GoogleSigninButton
+          size={GoogleSigninButton.Size.Standard}
+          color={GoogleSigninButton.Color.Light} 
+          style={$appleButtonStyle}
+          />
         <Spacer size="medium" />
         <View style={$haveAccountContainer}>
           <Text preset="body2" tx="auth.signup.alreadyHaveAccount" />
@@ -164,31 +183,31 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
           <Spacer size="medium" />
         </View>
       </View>
-      <Modalize ref={modalizeRef} withReactModal reactModalProps={{presentationStyle:"formSheet",animationType:'slide', }} modalStyle={$modalContainerStyle}>
-        <Spacer size="tiny"/>
-        <Pressable onPress={()=>modalizeRef.current.close()} style={$cancelBackground}>
-          <Icon name="close" size={spacing.large}  />
+      <Modalize ref={modalizeRef} withReactModal reactModalProps={{ presentationStyle: "formSheet", animationType: 'slide', }} modalStyle={$modalContainerStyle}>
+        <Spacer size="tiny" />
+        <Pressable onPress={() => modalizeRef.current.close()} style={$cancelBackground}>
+          <Icon name="close" size={spacing.large} />
         </Pressable >
-        <Spacer size="medium"/>
-        <Text preset="h3bold" text="Registration Successful!"/>
-        <Text preset="body1Inactive" text="Please check your email and follow the instructions!"/>
-        <Spacer size="small"/>
-        <Divider/>
-        <Spacer size="small"/>
-        <Text preset="body1Inactive" text="Or you can verify by entering the 4-digit code below"/>
-        <Spacer size="large"/>
+        <Spacer size="medium" />
+        <Text preset="h3bold" text="Registration Successful!" />
+        <Text preset="body1Inactive" text="Please check your email and follow the instructions!" />
+        <Spacer size="small" />
+        <Divider />
+        <Spacer size="small" />
+        <Text preset="body1Inactive" text="Or you can verify by entering the 4-digit code below" />
+        <Spacer size="large" />
         <OTPInput
           code={otp}
           editable={true}
           setCode={setOtp}
           maximumLength={4}
           setIsOTPReady={(isReady) => {
-            if(isReady) {
+            if (isReady) {
               setOtp('');
               _navigation.navigate("CreatePassword");
               modalizeRef.current.close();
             }
-          }} 
+          }}
         />
       </Modalize>
     </Screen>
@@ -204,7 +223,7 @@ const $root: ViewStyle = {
 }
 const $rootContainer: ViewStyle = {
   flex: 1,
-  justifyContent:'space-between'
+  // justifyContent:'space-between'
 }
 
 const $loginText: ViewStyle = {
@@ -217,20 +236,38 @@ const $haveAccountContainer: ViewStyle = {
   justifyContent: "center",
 }
 
-const $modalContainerStyle:ViewStyle={
-  padding:spacing.medium,
-  backgroundColor:colors.palette.primary400,
+const $modalContainerStyle: ViewStyle = {
+  padding: spacing.medium,
+  backgroundColor: colors.palette.primary400,
 }
-const $cancelBackground:ViewStyle={
-  backgroundColor:colors.palette.primary200,
-  width:spacing.extraLarge,
-  alignItems:'center',
-  justifyContent:'center',
-  height:spacing.extraLarge,
-  borderRadius:spacing.extraLarge,
+const $cancelBackground: ViewStyle = {
+  backgroundColor: colors.palette.primary200,
+  width: spacing.extraLarge,
+  alignItems: 'center',
+  justifyContent: 'center',
+  height: spacing.extraLarge,
+  borderRadius: spacing.extraLarge,
 }
-const $imageStyle:ImageStyle={
-  width:calculateRelativeWidth(250),
-  height:calculateRelativeHeight(150),
-  alignSelf:'center'
+const $imageStyle: ImageStyle = {
+  width: calculateRelativeWidth(250),
+  height: calculateRelativeHeight(150),
+  alignSelf: 'center'
+}
+
+const $divider: ViewStyle = {
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-evenly",
+}
+
+const $line: ViewStyle = {
+  width: calculateRelativeWidth(100),
+  borderBottomColor: colors.separator,
+  borderBottomWidth: 1,
+}
+
+const $appleButtonStyle: ViewStyle = {
+  width: "100%", // You must specify a width
+  minHeight: 50, // You must specify a height
+  // alignContent:'center'
 }

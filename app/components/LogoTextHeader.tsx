@@ -25,7 +25,7 @@ export const LogoTextHeader = (props: LogoTextHeaderProps) => {
     <View style={$styles}>
       <Text style={$text} tx="common.healthCare" preset="h1bold" />
       <View style={{ width: spacing.tiny }} />
-      <View style={$lineStyle} />
+      {/* <View style={$lineStyle} /> */}
     </View>
   )
 }

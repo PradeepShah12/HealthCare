@@ -9,11 +9,15 @@ import {
 
 import { Button, Icon, Screen, Spacer, Text, TextField } from "../../components"
 
-import { Device, colors, spacing } from "../../theme"
+import { $globalViewStyles, Device, colors, spacing } from "../../theme"
 import { Formik } from "formik"
 import * as Yup from "yup"
 import { AxiosError } from "axios"
-
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 import { navigate } from "../../navigators"
 
 import { LogoTextHeader } from "../../components/LogoTextHeader"
@@ -137,7 +141,7 @@ const dispatch = useAppDispatch()
               >
                 <Spacer size="small" />
                 <LogoTextHeader />
-                <Text tx="auth.signIn.getStarted" preset="h1" style={$signIn} />
+                <Text tx="auth.signIn.getStarted" preset="h1" style={[$signIn,$globalViewStyles.selfCenter]} />
                 <Spacer size="tiny" />
                 <Spacer size="medium" />
               </View>
@@ -178,7 +182,7 @@ const dispatch = useAppDispatch()
                 <Spacer size="medium" />
                 <Button
                   preset="filled"
-                  tx={"common.login"}
+                tx={"common.login"}
                   onPress={submitForm}
                   // disabled={_isLoginLoading}
                 />
@@ -192,7 +196,11 @@ const dispatch = useAppDispatch()
                 {/* <FacebookButton onPress={onFacebookLogin} type="login" /> */}
                 {/* <Spacer size="extraLarge" /> */}
 
-
+                <GoogleSigninButton
+          size={GoogleSigninButton.Size.Standard}
+          color={GoogleSigninButton.Color.Light} 
+          style={$appleButtonStyle}
+          />
         
 
                 <Spacer size="extraLarge" />
@@ -203,8 +211,8 @@ const dispatch = useAppDispatch()
                 >
                   <Text
                     tx="auth.signIn.forgotPassword"
-                    preset="body2"
-                    style={{ color: colors.palette.secondary700 }}
+                    preset="body2bold"
+                    style={{ color: colors.palette.primary100 }}
                   />
                 </Pressable>
               </View>
@@ -218,13 +226,15 @@ const dispatch = useAppDispatch()
               >
                 <View style={$haveAccountContainer}>
                   <Text preset="body2" tx="auth.signIn.noAccount" />
-                  <Pressable style={$loginText} onPress={() => _navigation.push("SignUpWithEmail")}>
-                    <Text
+                
+                <Spacer size="small" orientation="width"/>
+                    <Button tx="auth.signIn.signUpNow" preset="filled"  onPress={() => _navigation.push("SignUpWithEmail")}/>
+                    {/* <Text
                       tx="auth.signIn.signUpNow"
                       preset="body1bold"
                       style={{ color: colors.palette.secondary700 }}
-                    />
-                  </Pressable>
+                    /> */}
+   
                 </View>
               </View>
             </View>
@@ -245,7 +255,7 @@ const $divider: ViewStyle = {
 }
 
 const $line: ViewStyle = {
-  width: calculateRelativeWidth(145),
+  width: calculateRelativeWidth(100),
   borderBottomColor: colors.separator,
   borderBottomWidth: 1,
 }

@@ -108,7 +108,7 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
             onPress={() => formik.handleSubmit()}
           />
           <Spacer size="medium" />
-          <Button tx="common.cancel" onPress={() => _navigation.navigate("Login")} />
+          <Button textStyle={{color:colors.text}} tx="common.cancel" onPress={() => _navigation.navigate("Login")} />
         </View>
       </View>
     </Screen>

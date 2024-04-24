@@ -6,8 +6,8 @@ const palette = {
   neutral300: "#C8C7CC",  // Slightly darker gray
   neutral400: "#000000",  // Black for text
 
-  primary100: "#f1c013",
-  primary200: "#ffd244",  // Adjusted primary 200
+  primary100: "#000",
+  primary200: "#000",  // Adjusted primary 200
   primary300: "#FFF7D2",  // Adjusted primary 300
   primary400: "#fcf8e6",  // Adjusted primary 400
   primary500: "#fcf8e6",  // Adjusted primary 400

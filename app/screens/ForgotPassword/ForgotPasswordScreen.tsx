@@ -73,13 +73,13 @@ const isLoading=false
             onChangeText={formik.handleChange("email")}
           />
         </View>
-        <AutoImage source={Logo} style={$imageStyle} />
-
+        {/* <AutoImage source={Logo} style={$imageStyle} /> */}
+<Spacer size="medium"/>
         <View
-          style={{
-            marginTop:
-              Device.height > 700 ? calculateRelativeHeight(165) : calculateRelativeHeight(40),
-          }}
+          // style={{
+          //   marginTop:
+          //     Device.height > 700 ? calculateRelativeHeight(165) : calculateRelativeHeight(40),
+          // }}
         >
           <Button
             tx={isLoading ? "common.loading" : "auth.forgotPassword.resetPassword"}
@@ -88,8 +88,8 @@ const isLoading=false
             disabled={isLoading}
           />
           <Spacer size="small" />
-          <Button tx="common.cancel" onPress={() => _navigation.navigate("Login")} />
-          <Spacer size="medium" />
+          {/* <Button tx="common.cancel" onPress={() => _navigation.navigate("Login")} />
+          <Spacer size="medium" /> */}
         </View>
       </View>
     </Screen>
@@ -107,7 +107,7 @@ const $forgotPasswod: TextStyle = {
 
 const $formContainer: ViewStyle = {
   flex: 1,
-  justifyContent: "space-between",
+  // justifyContent: "space-between",
 }
 
 const $imageStyle:ImageStyle={
