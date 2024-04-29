@@ -27,7 +27,7 @@ const StepTracker: React.FC<HeartRateMonitorProps> = ({ stepsHistory, abnormalHe
       <Text style={styles.title}>{stepsHistory}
       </Text>
 
-      <LineChart data = {data} areaChart  width={spacing.massive+spacing.large} height={spacing.massive+spacing.small}/>
+      {/* <LineChart data = {data} areaChart  width={spacing.massive+spacing.large} height={spacing.massive+spacing.small}/> */}
 
     </View>
   );
@@ -38,9 +38,10 @@ const styles = StyleSheet.create({
     flex:1,
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
+    
+    // padding: 16,
+    // marginBottom: 16,
+    // elevation: 2,
     justifyContent:'space-between',
     // a:'flex-start'
   },

@@ -2,7 +2,7 @@ import * as React from "react"
 import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
 import {  colors, spacing } from "../theme"
 import { Text } from "./Text"
-import { calculateRelativeWidth } from "../utils/calculateRelativeDimensions"
+import { calculateRelativeHeight, calculateRelativeWidth } from "../utils/calculateRelativeDimensions"
 
 
 import { IconBackground } from "./IconBackground"
@@ -44,7 +44,7 @@ export const DefaultHeader = (props: DefaultHeaderProps|DefaultHeaderBottomTabPr
       <View style={$lineStyle} />
       <View style={$headerIcon}>
         <IconBackground onPress={()=>navigation.navigate("Search")}>
-        <DynamicIcon iconFamily={"Feather"} iconName="search"       />
+        <DynamicIcon iconFamily={"Feather"} iconName="search"   iconSize={calculateRelativeHeight(60)}    />
         </IconBackground>
       <IconBackground onPress={()=>navigation.navigate("Notification")}>
       <View style={$badgeStyle}>

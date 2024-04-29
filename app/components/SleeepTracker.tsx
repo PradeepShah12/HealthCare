@@ -15,8 +15,8 @@ const SleepTracker: React.FC<SleepTrackerProps> = ({ sleepDuration, sleepQuality
     <View style={styles.container}>
       <Text style={styles.title}>Sleep Tracker</Text>
       <Text>Sleep Duration: {sleepDuration}</Text>
-      <Text>Sleep Quality: {sleepQuality}</Text>
-      <PieChart data={data} radius={spacing.massive+spacing.small}/>
+      {/* <Text>Sleep Quality: {sleepQuality}</Text>
+      <PieChart data={data} radius={spacing.massive+spacing.small}/> */}
       {/* Display sleep analysis chart/graph here */}
     </View>
   );
@@ -26,10 +26,11 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    padding: 16,
-    marginBottom: 16,
-    elevation: 2,
-    justifyContent:'space-between'
+    // padding: 16,
+    // marginBottom: 16,
+    // elevation: 2,
+    alignItems:'center'
+   
 
   },
 

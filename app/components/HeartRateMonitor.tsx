@@ -24,9 +24,9 @@ const HeartRateMonitor: React.FC<HeartRateMonitorProps> = ({ currentHeartRate, a
     <View style={styles.container}>
       <Text style={styles.title}>Heart Rate Monitor</Text>
       <Text>Current Heart Rate: {currentHeartRate}</Text>
-      {abnormalHeartRate && <Text style={styles.abnormal}>Abnormal Heart Rate Detected!</Text>}
+      {/* {abnormalHeartRate && <Text style={styles.abnormal}>Abnormal Heart Rate Detected!</Text>}
 
-      <LineChart data = {data} areaChart height={spacing.massive+spacing.large} />
+      <LineChart data = {data} areaChart height={spacing.massive+spacing.large} /> */}
 
     </View>
   );
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex:1,
     backgroundColor: '#ffffff',
     borderRadius: 8,
-    padding: 16,
+    // padding: 16,
     marginBottom: 16,
     elevation: 2,
     justifyContent:'space-between'

@@ -18,11 +18,12 @@ import * as Screens from "app/screens"
 import Config from "../config"
 import { useStores } from "../models"
 import { DemoNavigator, DemoTabParamList } from "./DemoNavigator"
-import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
+import { navigate, navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
 import { AuthStack } from "./AuthStack"
 import { LoggedInNavigator } from "./LoggedInNavigator"
 import { useAppSelector } from "app/store"
+import { DynamicIcon } from "app/components/DynamicIcon"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -47,6 +48,7 @@ export type AppStackParamList = {
 	HeartRateMonitor: undefined
 	SleepTracker: undefined
 	Setting: undefined
+	WaterReminder: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -71,12 +73,15 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
   console.log(isAuthenticated,'is authenticatedd ')
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
-      initialRouteName={isAuthenticated ? "LoggedInNavigator" : "Demo"}
+      screenOptions={{ headerShown: false, navigationBarColor: colors.danger}}
+      initialRouteName={isAuthenticated ? "LoggedIn" : "Demo"}
     >
       {isAuthenticated ? (
         <>
-          <Stack.Screen name="LoggedInNavigator" component={LoggedInNavigator} />
+          <Stack.Screen name="LoggedIn" component={LoggedInNavigator}   options={{headerShown:true,title:"Dashboard",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />,
+        // headerLeft:()=> <DynamicIcon iconName="settings" iconSize={30} iconFamily="Ionicons" iconOnPress={()=>navigate("Setting")}/>
+      }}  />
 
         </>
       ) : (
@@ -88,10 +93,21 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
       )}
 
       {/** 🔥 Your screens go here */}
-			<Stack.Screen name="StepTracker" component={Screens.StepTrackerScreen} />
-			<Stack.Screen name="HeartRateMonitor" component={Screens.HeartRateMonitorScreen} />
-			<Stack.Screen name="SleepTracker" component={Screens.SleepTrackerScreen} />
-			<Stack.Screen name="Setting" component={Screens.SettingScreen} />
+			<Stack.Screen name="StepTracker" component={Screens.StepTrackerScreen}  options={{headerShown:true,title:"Step Tracker",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
+      }}  />
+			<Stack.Screen name="HeartRateMonitor" component={Screens.HeartRateMonitorScreen}  options={{headerShown:true,title:"Heart Rate Monitor",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
+      }} />
+			<Stack.Screen name="SleepTracker" component={Screens.SleepTrackerScreen} options={{headerShown:true,title:"Sleep Tracker",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
+      }}  />
+			<Stack.Screen name="Setting" component={Screens.SettingScreen}  options={{headerShown:true,title:"Setting",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
+      }}  />
+			<Stack.Screen name="WaterReminder"  component={Screens.WaterReminderScreen} options={{headerShown:true,title:"Hydration Reminder",headerBackTitle:'back',
+        headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
+      }} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

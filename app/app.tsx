@@ -35,11 +35,19 @@ import { NativeModules, Platform, StatusBar, ViewStyle } from "react-native"
 import { persistor, store } from "./store"
 import { Provider } from "react-redux"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import * as Notifications from 'expo-notifications';
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 if (__DEV__ && Platform.OS === "ios") {
   NativeModules.DevSettings.setIsDebuggingRemotely(true)
 }
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 // Web linking configuration
 const prefix = Linking.createURL("/")

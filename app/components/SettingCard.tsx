@@ -5,6 +5,7 @@ import { Text } from "./Text"
 import { DynamicIcon } from "./DynamicIcon"
 import { Spacer } from "./Spacer"
 import { calculateRelativeWidth } from "../utils/calculateRelativeDimensions"
+import { Button } from "./Button"
 
 export interface SettingCardProps extends PressableProps {
   /**
@@ -25,11 +26,11 @@ export const SettingCard = (props: SettingCardProps) =>{
   const $styles = style
 
   return (
-      <TouchableOpacity {...props} style={[$globalViewStyles.row,$cardWrapper,noBorder&&$noBorder,$styles]}>
+      <Button {...props} style={[$globalViewStyles.row,$cardWrapper,$styles]}>
         <DynamicIcon iconName={iconName} iconFamily={iconFamily}/>
         <Spacer size="medium" orientation="width"/>
         <Text text={title} preset="body2"/>
-             </TouchableOpacity>
+             </Button>
   )
 }
 

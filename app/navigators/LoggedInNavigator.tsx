@@ -79,7 +79,7 @@ header(props) {
           ),
         }}
       />
-          <Tab.Screen
+          {/* <Tab.Screen
         name="StepTracker"
         component={StepTrackerScreen}
         options={{
@@ -130,7 +130,7 @@ header(props) {
             
           ),
         }}
-      />
+      /> */}
 
 <Tab.Screen
         name="Setting"

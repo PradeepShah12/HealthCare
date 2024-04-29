@@ -1,12 +1,13 @@
 import React, { FC } from "react";
 import { observer } from "mobx-react-lite";
-import { StyleSheet, View, FlatList, TouchableOpacity } from "react-native";
+import { StyleSheet, View, FlatList, TouchableOpacity, ViewStyle } from "react-native";
 import { AppStackScreenProps, navigate } from "app/navigators";
-import { Screen, Text, Button } from "app/components";
+import { Screen, Text, Button, Spacer } from "app/components";
 import { $globalViewStyles, colors, spacing, typography } from "app/theme";
 import StepTracker from "app/components/StepTracker";
 import HeartRateMonitor from "app/components/HeartRateMonitor";
 import SleepTracker from "app/components/SleeepTracker";
+import { DynamicIcon } from "app/components/DynamicIcon";
 
 interface ActivityItem {
   id: string;
@@ -16,6 +17,19 @@ interface ActivityItem {
 }
 
 interface DashboardScreenProps extends AppStackScreenProps<"Dashboard"> {}
+const Actions = [
+  { name: "Swimming Tracker", id: '1', icon: "water", navigationKey: "SwimmingScreen" },
+  { name: "Hydration Reminder", id: '2', icon: "alarm", navigationKey: "WaterReminder" },
+  { name: "Steps Taken", id: '11', icon: "walk", navigationKey: "StepTracker" },
+  { name: "Sleep Tracker", id: '12', icon: "moon", navigationKey: "SleepTracker" },
+  { name: "Nutrition Tracker", id: '3', icon: "nutrition", navigationKey: "NutritionTrackerScreen" },
+  { name: "Workout Monitoring", id: '4', icon: "fitness", navigationKey: "WorkoutMonitoringScreen" },
+  { name: "Heartbeat Monitoring", id: '6', icon: "heart", navigationKey: "HeartRateMonitor" },
+  { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlogScreen" },
+  { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "CustomWorkoutPlanScreen" },
+  { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitoringScreen" },
+  { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurementScreen" },
+];
 
 const dummyActivityData: ActivityItem[] = [
   { id: "1", title: "Morning Walk", duration: "30 minutes", type: "Walking" },
@@ -26,19 +40,26 @@ const dummyActivityData: ActivityItem[] = [
 export const DashboardScreen: FC<DashboardScreenProps> = observer(function DashboardScreen() {
   return (
     <Screen style={styles.root} preset="scroll" safeAreaEdges={["top"]} StatusBarProps={{ backgroundColor: "red", networkActivityIndicatorVisible: true }}>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={()=>navigate("StepTracker")} style={[styles.card, $globalViewStyles.shadow]}>
-          <StepTracker  stepsHistory={400} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>navigate("SleepTracker")} style={[styles.card, $globalViewStyles.shadow]}>
-          <SleepTracker sleepDuration={""} sleepQuality={""} sleepAnalysisData={[]} />
-        </TouchableOpacity>
-  
-      </View>
-      <TouchableOpacity onPress={()=>navigate("HeartRateMonitor")} style={[styles.card, $globalViewStyles.shadow,{alignItems:'center'}]}>
-          <HeartRateMonitor currentHeartRate={0} abnormalHeartRate={true} heartRateHistory={[]} />
-        </TouchableOpacity>
-      <View style={[styles.card, styles.activityContainer,]}>
+       <Spacer size="small"/>
+<View style={$listContainerStyle}>
+
+
+{Actions.map((item,index)=>{
+  return (
+
+    <TouchableOpacity  key={item.id} onPress={()=>navigate(item.navigationKey)} style={[styles.card, $globalViewStyles.shadow,$globalViewStyles.rowCenter,$globalViewStyles.justifyContentBetween]}>
+      <Text text={item.name}/>
+      <DynamicIcon iconName={item.icon}/>
+  </TouchableOpacity>
+  )
+})}
+</View>
+
+
+
+
+
+      {/* <View style={[styles.card, styles.activityContainer,]}>
         <Text style={styles.cardTitle}>Recent Activity</Text>
         <FlatList
           data={dummyActivityData}
@@ -55,7 +76,7 @@ export const DashboardScreen: FC<DashboardScreenProps> = observer(function Dashb
           contentContainerStyle={styles.activityList}
         />
         <Button text="View All" onPress={() => console.log("View All pressed")} />
-      </View>
+      </View> */}
     </Screen>
   );
 });
@@ -75,6 +96,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     elevation: 2,
     marginBottom: spacing.medium,
+    paddingVertical:spacing.extraMedium,
+    paddingHorizontal:spacing.small,
+
+    width:'45%',
+    backgroundColor:'#6b99f5'
+
 // alignItems:'center'
     // padding: spacing.medium,
     // minw: "48%", // Adjust according to your layout
@@ -114,3 +141,6 @@ const styles = StyleSheet.create({
 });
 
 export default DashboardScreen;
+
+
+const $listContainerStyle:ViewStyle={flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'}
