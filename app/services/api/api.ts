@@ -1,80 +1,93 @@
-/**
- * This Api class lets you define an API endpoint and methods to request
- * data and process it.
- *
- * See the [Backend API Integration](https://docs.infinite.red/ignite-cli/boilerplate/app/services/#backend-api-integration)
- * documentation for more details.
- */
-import { ApiResponse, ApisauceInstance, create } from "apisauce"
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from "axios"
 import Config from "../../config"
-import { GeneralApiProblem, getGeneralApiProblem } from "./apiProblem"
-import type { ApiConfig, ApiFeedResponse } from "./api.types"
-import type { EpisodeSnapshotIn } from "../../models/Episode"
+import HttpStatus from "http-status-codes"
+import { store, useAppDispatch } from "../../store"
 
-/**
- * Configuring the apisauce instance.
- */
-export const DEFAULT_API_CONFIG: ApiConfig = {
-  url: Config.API_URL,
-  timeout: 10000,
+import { setError } from "../../store/Error/error.slice"
+import { userLogout } from "../../store/Auth/auth.slice"
+import { setUnreadMessage } from "../../store/User/user.slice"
+import { ApiError } from "../.."
+
+const RETRY_COUNT_LIMIT = 3
+
+interface CustomConfig extends AxiosRequestConfig {
+  __isRetryRequest?: boolean
+  _retry?: boolean
+  retryCount?: number
 }
 
-/**
- * Manages all requests to the API. You can use this class to build out
- * various requests that you need to call from your backend API.
- */
-export class Api {
-  apisauce: ApisauceInstance
-  config: ApiConfig
+const api: AxiosInstance = axios.create({
+  baseURL: Config.API_URL,
+})
 
-  /**
-   * Set up our API instance. Keep this lightweight!
-   */
-  constructor(config: ApiConfig = DEFAULT_API_CONFIG) {
-    this.config = config
-    this.apisauce = create({
-      baseURL: this.config.url,
-      timeout: this.config.timeout,
-      headers: {
-        Accept: "application/json",
-      },
-    })
+// request interceptors
+api.interceptors.request.use(async (config) => {
+  const { auth } = store.getState()
+
+
+  if (__DEV__) {
+    config.headers["localtonet-skip-warning"] = true
+    config.headers["ngrok-skip-browser-warning"]=234
   }
 
-  /**
-   * Gets a list of recent React Native Radio episodes.
-   */
-  async getEpisodes(): Promise<{ kind: "ok"; episodes: EpisodeSnapshotIn[] } | GeneralApiProblem> {
-    // make the api call
-    const response: ApiResponse<ApiFeedResponse> = await this.apisauce.get(
-      `api.json?rss_url=https%3A%2F%2Ffeeds.simplecast.com%2FhEI_f9Dx`,
-    )
+  // if (auth.token) {
+  //   config.headers.Authorization = `Bearer ${auth.token}`
+  // }
 
-    // the typical ways to die when calling an api
-    if (!response.ok) {
-      const problem = getGeneralApiProblem(response)
-      if (problem) return problem
-    }
+  return config
+})
 
-    // transform the data into the format we are expecting
-    try {
-      const rawData = response.data
+// response interceptors
+// response interceptors
+// response interceptors
 
-      // This is where we transform the data into the shape we expect for our MST model.
-      const episodes: EpisodeSnapshotIn[] =
-        rawData?.items.map((raw) => ({
-          ...raw,
-        })) ?? []
 
-      return { kind: "ok", episodes }
-    } catch (e) {
-      if (__DEV__ && e instanceof Error) {
-        console.error(`Bad data: ${e.message}\n${response.data}`, e.stack)
-      }
-      return { kind: "bad-data" }
-    }
-  }
-}
 
-// Singleton instance of the API for convenience
-export const api = new Api()
+
+// api.interceptors.response.use(
+//   ({data,...all}) => {
+//     const dispatch= store.dispatch
+// // console.log(data,'metadata')    
+// dispatch(setUnreadMessage({unreadMessage:data?.message,unreadNotification:data?.notification}))
+// return {data,...all}
+
+
+
+//   },
+//   async (error) => {
+//     const err = error as AxiosError<ApiError>
+//     const config = err.config as CustomConfig
+//     // Check if the error code is 401 and message is Unauthorized
+//     if (
+//       Number(err?.response?.data?.code) === HttpStatus.UNAUTHORIZED &&
+//       err.response.data?.message === HttpStatus.getStatusText(HttpStatus.UNAUTHORIZED) &&
+//       !config.__isRetryRequest
+//     ) {
+//       // If retries exceed the limit, logout user
+//       if (config.retryCount >= RETRY_COUNT_LIMIT) {
+//         store.dispatch(
+//           setError({
+//             errorMessage: "Session Expired. You have been logged out.",
+//             isSnackBarVisible: true,
+//             type: "error",
+//           }),
+//         )
+//         store.dispatch(userLogout())
+//         return Promise.reject(error)
+//       }
+
+//       // Retry the request
+//       config._retry = true
+//       config.retryCount = (config.retryCount || 0) + 1
+
+//       return api(config)
+//     }
+
+//     // Handle other errors without logging a warning
+  
+//     return Promise.reject(error)
+//   },
+// )
+
+
+export default api

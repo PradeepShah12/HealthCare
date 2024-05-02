@@ -2,12 +2,10 @@ import React, { FC, useRef, useState } from "react"
 import { Modalize } from 'react-native-modalize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {
-  GoogleSignin,
   GoogleSigninButton,
-  statusCodes,
 } from '@react-native-google-signin/google-signin';
 import { Keyboard, Pressable, View, ViewStyle } from "react-native"
-import { AutoImage, Button, Screen, Spacer, Text, TextField } from "../../components"
+import {  Button, Screen, Spacer, Text, TextField } from "../../components"
 import { $globalViewStyles, colors, spacing } from "../../theme"
 
 import * as Yup from "yup"
@@ -19,13 +17,13 @@ import { AuthStackScreenProps } from "../../navigators/AuthStack"
 import { LogoTextHeader } from "../../components/LogoTextHeader"
 import OTPInput from "../../components/OTPInput";
 import { Divider } from "react-native-paper";
-import Logo from "../../../assets/logo-transparent.png";
 import { calculateRelativeHeight, calculateRelativeWidth } from "../../utils/calculateRelativeDimensions";
 import { AxiosError } from "axios";
 import { AuthService } from "../../services/api/Auth/auth.api";
 import { useMutation } from "@tanstack/react-query";
 import { setError, setSuccess } from "../../store/Error/error.slice";
 import { ImageStyle } from "react-native-fast-image";
+import { ApiErrorResponse } from "apisauce";
 
 interface JoinWithEmail {
   fullName: string,
@@ -56,8 +54,8 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
 
   const dispatch = useAppDispatch()
 
-  const { mutate: invite, isPending: initationPending } = useMutation({
-    mutationFn: (body: JoinWithEmail) => AuthService.invite(body),
+  const { mutate: register, isPending: initationPending } = useMutation({
+    mutationFn: (body: JoinWithEmail) => AuthService.register(body),
     onSuccess: async (response) => {
       if (response?.message) {
         dispatch(setSuccess({
@@ -71,7 +69,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
         }))
       }
     },
-    onError: (error: AxiosError<ApiError>) => {
+    onError: (error: AxiosError<ApiErrorResponse>) => {
       dispatch(
         setError({
           isSnackBarVisible: true,
@@ -82,7 +80,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
   })
 
   const onSubmit = (values: JoinWithEmail) => {
-    invite(values)
+    register(values)
   }
 
   return (

@@ -1,18 +1,20 @@
 
 export interface RegisterDto {
-  first_name: string
-  last_name: string
-  email: string
-  mobile_no: string
-  password: string
-  confirm_password: string
-  role: string
-  fcm_token: string
+  FirstName: string
+  LastName: string
+  Email: string
+  Username: string
+  Password: string
+  Height: string
+  Weight: string
+  Country: string
+  DateOfBirth:string
+
 }
 
 export interface LoginDto {
-  username: string
-  password: string
+  Email: string
+  Password: string
 
 }
 
@@ -62,10 +64,9 @@ export interface RefreshTokenResponse {
 }
 
 export interface ResetPasswordDto {
-  reset_token: string
-  uid: string
-  password: string
-  confirm_password: string
+  Email: string
+  OldPassword: string
+  NewPassword: string
 }
 
 export interface FacebookLoginDto {

@@ -4,30 +4,27 @@ import { Button, Icon, Screen, Spacer, Text, TextField } from "../../components"
 import { spacing, colors, Device } from "../../theme"
 import { FormikHelpers, useFormik } from "formik"
 import * as Yup from "yup"
+import { AxiosError } from "axios";
+
 import { passwordRegex } from "../../utils/constants"
 import { AuthStackScreenProps } from "../../navigators/AuthStack"
 import { LogoTextHeader } from "../../components/LogoTextHeader"
 import { calculateRelativeHeight } from "../../utils/calculateRelativeDimensions"
+import { useMutation } from "@tanstack/react-query"
+import { AuthService } from "app/services/api/Auth/auth.api"
+import { ApiErrorResponse } from "apisauce"
+import { useAppDispatch } from "app/store"
+import { setError } from "app/store/Error/error.slice"
 
 interface ResetPasswordForm {
-  newPassword: string
-  confirmNewPassword: string
+  Email:string
+  OldPassword: string
+  NewPassword: string
 }
 
 const validation = Yup.object().shape({
-  newPassword: Yup.string()
-    .matches(passwordRegex, {
-      message: "Password must be at least 8 characters long with a special character",
-    })
-    .oneOf([Yup.ref("confirmNewPassword"), null], "Passwords do not match")
-    .required("Password is required")
-    .min(8, "Password must be more than 8 characters"),
-  confirmNewPassword: Yup.string()
-    .matches(passwordRegex, {
-      message: "Password must be at least 8 characters long with a special character",
-    })
-    .oneOf([Yup.ref("newPassword"), null], "Passwords do not match")
-    .required("Confirm Password is required"),
+  OldPassword: Yup.string().required().min(8, "Password must be more than 8 characters"),
+  NewPassword: Yup.string().required("New Password is required"),
 })
 
 interface ResetPasswordScreenProps extends AuthStackScreenProps<"ResetPassword"> {}
@@ -38,16 +35,47 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
 
   const [isSecureEntry, setIsSecureEntry] = useState(true)
 
- const isLoading = false
+
+const dispatch = useAppDispatch()
+
+
+ const { mutate: resetPassword, isPending:isLoading } = useMutation({
+  mutationFn: (_body:ResetPasswordForm ) =>AuthService.resetPassword(_body),
+  onSuccess: (_data) => {
+    
+          _navigation.navigate("Login", { reset_token: 'sdf', uid: 'sdfs' })      // resetPassword({ Email: values.Email.toLowerCase() })
+
+    // _navigation.push("ForgotPasswordEmailSent", { id: null})
+  },
+  onError: (error: AxiosError<ApiErrorResponse>) => {
+    _navigation.navigate("Login", { reset_token: 'sdf', uid: 'sdfs' })      // resetPassword({ Email: values.Email.toLowerCase() })
+
+    dispatch(
+      setError({
+        isSnackBarVisible: true,
+        errorMessage: error.message || "Invalid Email or password.",
+      }),
+    )
+  },
+})
+
+
+
   const handleReset = (_values: ResetPasswordForm, actions: FormikHelpers<ResetPasswordForm>) => {
     actions.validateForm()
+    resetPassword({
+      Email: _values.Email,
+      OldPassword: _values.OldPassword,
+      NewPassword: _values.NewPassword
+    })
      
   }
 
   const formik = useFormik({
     initialValues: {
-      newPassword: "",
-      confirmNewPassword: "",
+      NewPassword: "",
+      OldPassword: "",
+      Email:""
     },
     validationSchema: validation,
     onSubmit: handleReset,
@@ -71,11 +99,21 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
           <Spacer size="medium" />
           <Text tx="auth.resetPassword.create" preset="inactive" />
           <Spacer size="medium" />
+
+          <TextField
+            labelTx="auth.resetPassword.Email"
+            status={formik.errors.Email ? "error" : null}
+            helper={formik.errors.Email}
+            onChangeText={formik.handleChange("Email")}
+            // secureTextEntry={isSecureEntry}
+        
+          />
+          <Spacer size="medium" />
           <TextField
             labelTx="auth.resetPassword.newPassword"
-            status={formik.errors.newPassword ? "error" : null}
-            helper={formik.errors.newPassword}
-            onChangeText={formik.handleChange("newPassword")}
+            status={formik.errors.NewPassword ? "error" : null}
+            helper={formik.errors.NewPassword}
+            onChangeText={formik.handleChange("NewPassword")}
             secureTextEntry={isSecureEntry}
             RightAccessory={() => (
               <Icon
@@ -89,10 +127,10 @@ export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
           />
           <Spacer size="large" />
           <TextField
-            labelTx="auth.resetPassword.confirmNewPassword"
-            status={formik.errors.confirmNewPassword ? "error" : null}
-            helper={formik.errors.confirmNewPassword}
-            onChangeText={formik.handleChange("confirmNewPassword")}
+            labelTx="auth.resetPassword.OldPassword"
+            status={formik.errors.OldPassword ? "error" : null}
+            helper={formik.errors.OldPassword}
+            onChangeText={formik.handleChange("OldPassword")}
             secureTextEntry
           />
         </View>

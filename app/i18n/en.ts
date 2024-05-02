@@ -125,11 +125,13 @@ const en = {
       verifyOtp: "Verify OTP",
     },
     resetPassword: {
+      Email:"Email",
       resetYourPassword: "RESET YOUR\nPASSWORD",
       create:
         "Please create a new password. Passwords must be at least 8 character long and include a special character.",
       newPassword: "New Password",
       confirmNewPassword: "Confirm New Password",
+    OldPassword:"Old Password",
       confirm: "Confirm Password",
       success: "SUCCESS!\nYOUR PASSWORD\nHAS BEEN RESET.",
     },

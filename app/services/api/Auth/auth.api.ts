@@ -17,13 +17,13 @@ import {
 
 class Auth {
   async register(body: RegisterDto) {
-    const response = await api.post<LoginResponse>("/auth/register", body)
+    const response = await api.post<LoginResponse>("/user/singup/userregistration", body)
 
     return response.data
   }
 
   async login(body: LoginDto) {
-    const response = await api.post<LoginResponse>("/auth/login", body)
+    const response = await api.post<LoginResponse>("/user/chklogin", body)
     return response.data
   }
 
@@ -56,9 +56,10 @@ class Auth {
     return response.data
   }
 
-  async forgotPassword(body: { email: string }) {
+  async forgotPassword(body: { Email: string }) {
+    console.log('forget password')
     const response = await api.post<ApiResponse<ForgotPasswordResponse>>(
-      "/auth/forgot-password",
+      "/user/singup/forgotpassword",
       body,
     )
 
@@ -66,7 +67,7 @@ class Auth {
   }
 
   async resetPassword(body: ResetPasswordDto) {
-    const response = await api.post("/auth/reset-password", body)
+    const response = await api.post("/user/singup/resetpassword", body)
 
     return response.data
   }

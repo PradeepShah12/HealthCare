@@ -25,13 +25,13 @@ import { calculateRelativeHeight, calculateRelativeWidth } from "../../utils/cal
 import { AuthStackScreenProps } from "../../navigators/AuthStack"
 import { useAppDispatch } from "../../store"
 import { userLogin } from "../../store/Auth/auth.slice"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { LoginDto } from "../../services/api/Auth/types"
-import { AuthService } from "../../services/api/Auth/auth.api"
-import { setError } from "../../store/Error/error.slice"
-import { setUser } from "../../store/User/user.slice"
-import { ApiError } from "../.."
-import { QueryKey } from "../../utils/react-query/queryKeys"
+import { LoginDto, LoginResponse } from "app/services/api/Auth/types"
+import { AuthService } from "app/services/api/Auth/auth.api"
+import { setUser } from "app/store/User/user.slice"
+import { setError } from "app/store/Error/error.slice"
+import { ApiErrorResponse } from "apisauce"
+import { useMutation } from "@tanstack/react-query"
+
 
 const validation = Yup.object().shape({
   email: Yup.string().required("Email or Username is required"),
@@ -70,34 +70,35 @@ const dispatch = useAppDispatch()
 
 
 
+
+
+  //  login mutations
+  const { mutate: login } = useMutation({
+    mutationFn: (body: LoginDto) => AuthService.login(body),
+    onSuccess: (response:LoginResponse) => {
+      // perform other side effects on success - save tokens
+      console.log(response,'user login response')
+      dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
+
+      // dispatch(setUser({ user: response.data?.user }))
+    },
+    onError: (error: AxiosError<ApiErrorResponse>) => {
+      dispatch(
+        setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error?.message }),
+      )
+    },
+  })
   const onSubmit = (values: InitialValues) => {
     console.log({ username: values.email.toLowerCase(), password: values.password })
-    if(values.email.toLowerCase()==='admin@gmail.com'&& values.password ==='admin'){
-      dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
-    }
+const body:LoginDto = {
+  Email: values.email.toLowerCase(),
+  Password:  values.password
+}
+    login(body)
+
+
+   
   }
-
-  // facebook login mutations
-  // const { mutate: loginWithFacebook } = useMutation({
-  //   mutationFn: (body: FacebookLoginDto) => AuthService.loginWithFacebook(body),
-  //   onSuccess: (response) => {
-  //     // perform other side effects on success - save tokens
-  //     dispatch(
-  //       userLogin({
-  //         isAuthenticated: true,
-  //         token: response.data.token,
-  //         refreshToken: response.data.refresh_token,
-  //       }),
-  //     )
-  //     dispatch(setUser({ user: response.data?.user }))
-  //   },
-  //   onError: (error: AxiosError<ApiErrorResponse>) => {
-  //     dispatch(
-  //       setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error?.message }),
-  //     )
-  //   },
-  // })
-
 
 
 
