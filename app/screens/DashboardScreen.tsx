@@ -28,7 +28,7 @@ const Actions = [
   { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlogScreen" },
   { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "CustomWorkoutPlanScreen" },
   { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitoringScreen" },
-  { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurementScreen" },
+  { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurement" },
 ];
 
 const dummyActivityData: ActivityItem[] = [

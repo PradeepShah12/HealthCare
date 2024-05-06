@@ -49,6 +49,7 @@ export type AppStackParamList = {
 	SleepTracker: undefined
 	Setting: undefined
 	WaterReminder: undefined
+	BodyMeasurement: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -108,6 +109,7 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 			<Stack.Screen name="WaterReminder"  component={Screens.WaterReminderScreen} options={{headerShown:true,title:"Hydration Reminder",headerBackTitle:'back',
         headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
       }} />
+			<Stack.Screen name="BodyMeasurement" component={Screens.BodyMeasurementScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
