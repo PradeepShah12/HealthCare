@@ -50,6 +50,9 @@ export type AppStackParamList = {
 	Setting: undefined
 	WaterReminder: undefined
 	BodyMeasurement: undefined
+	NutrititonTracker: undefined
+	AddMeal: undefined
+	MealHistory: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -110,6 +113,9 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
         headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
       }} />
 			<Stack.Screen name="BodyMeasurement" component={Screens.BodyMeasurementScreen} />
+			<Stack.Screen name="NutrititonTracker" component={Screens.NutrititonTrackerScreen} />
+			<Stack.Screen name="AddMeal" component={Screens.AddMealScreen} />
+			<Stack.Screen name="MealHistory" component={Screens.MealHistoryScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

@@ -22,7 +22,7 @@ const Actions = [
   { name: "Hydration Reminder", id: '2', icon: "alarm", navigationKey: "WaterReminder" },
   { name: "Steps Taken", id: '11', icon: "walk", navigationKey: "StepTracker" },
   { name: "Sleep Tracker", id: '12', icon: "moon", navigationKey: "SleepTracker" },
-  { name: "Nutrition Tracker", id: '3', icon: "nutrition", navigationKey: "NutritionTrackerScreen" },
+  { name: "Nutrition Tracker", id: '3', icon: "nutrition", navigationKey: "NutrititonTracker" },
   { name: "Workout Monitoring", id: '4', icon: "fitness", navigationKey: "WorkoutMonitoringScreen" },
   { name: "Heartbeat Monitoring", id: '6', icon: "heart", navigationKey: "HeartRateMonitor" },
   { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlogScreen" },

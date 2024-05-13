@@ -21,6 +21,8 @@
     "build:android:sim": "eas build --profile development --platform android --local",
     "build:android:dev": "eas build --profile development:device --platform android --local",
     "build:android:prod": "eas build --profile production --platform android --local",
+    "release:ios": "echo 'Not implemented yet: release:ios. Use Xcode. More info: https://reactnative.dev/docs/next/publishing-to-app-store'",
+    "release:android": "cd android && rm -rf app/src/main/res/drawable-* && ./gradlew assembleRelease && cd - && echo 'APK generated in ./android/app/build/outputs/apk/release/app-release.apk'",
     "start": "npx expo start",
     "android": "npx expo run:android",
     "ios": "npx expo run:ios",
