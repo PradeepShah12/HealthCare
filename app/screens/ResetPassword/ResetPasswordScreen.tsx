@@ -17,14 +17,22 @@ import { useAppDispatch } from "app/store"
 import { setError } from "app/store/Error/error.slice"
 
 interface ResetPasswordForm {
-  Email:string
-  OldPassword: string
+  Otp:string
+  ConfirmPassword: string
   NewPassword: string
 }
 
 const validation = Yup.object().shape({
-  OldPassword: Yup.string().required().min(8, "Password must be more than 8 characters"),
-  NewPassword: Yup.string().required("New Password is required"),
+  NewPassword: Yup.string().required("New Password is required").matches(passwordRegex, {
+    message: "Password must be at least 8 characters long with a special character",
+  }),
+
+  ConfirmPassword: Yup.string()
+    .matches(passwordRegex, {
+      message: "Password must be at least 8 characters long with a special character",
+    })
+    .oneOf([Yup.ref("NewPassword")], "Passwords do not match")
+    .required("Confirm Password is required"),
 })
 
 interface ResetPasswordScreenProps extends AuthStackScreenProps<"ResetPassword"> {}
@@ -64,18 +72,20 @@ const dispatch = useAppDispatch()
   const handleReset = (_values: ResetPasswordForm, actions: FormikHelpers<ResetPasswordForm>) => {
     actions.validateForm()
     resetPassword({
-      Email: _values.Email,
-      OldPassword: _values.OldPassword,
-      NewPassword: _values.NewPassword
+      Otp: _values.Otp,
+      NewPassword: _values.NewPassword,
+
+      ConfirmPassword: _values.ConfirmPassword,
     })
      
   }
 
   const formik = useFormik({
     initialValues: {
+      Otp:"",
+
       NewPassword: "",
-      OldPassword: "",
-      Email:""
+      ConfirmPassword: "",
     },
     validationSchema: validation,
     onSubmit: handleReset,
@@ -101,20 +111,20 @@ const dispatch = useAppDispatch()
           <Spacer size="medium" />
 
           <TextField
-            labelTx="auth.resetPassword.Email"
-            status={formik.errors.Email ? "error" : null}
-            helper={formik.errors.Email}
-            onChangeText={formik.handleChange("Email")}
+            labelTx="common.Otp"
+            status={formik.errors.Otp ? "error" : null}
+            helper={formik.errors.Otp}
+            onChangeText={formik.handleChange("Otp")}
             // secureTextEntry={isSecureEntry}
         
           />
           <Spacer size="medium" />
           <TextField
             labelTx="auth.resetPassword.newPassword"
-            status={formik.errors.NewPassword ? "error" : null}
+            status={formik.errors.NewPassword ? "error" : undefined}
             helper={formik.errors.NewPassword}
             onChangeText={formik.handleChange("NewPassword")}
-            secureTextEntry={isSecureEntry}
+            // secureTextEntry={isSecureEntry}
             RightAccessory={() => (
               <Icon
                 icon={isSecureEntry ? "eyeOpen" : "eyeClosed"}
@@ -127,11 +137,11 @@ const dispatch = useAppDispatch()
           />
           <Spacer size="large" />
           <TextField
-            labelTx="auth.resetPassword.OldPassword"
-            status={formik.errors.OldPassword ? "error" : null}
-            helper={formik.errors.OldPassword}
-            onChangeText={formik.handleChange("OldPassword")}
-            secureTextEntry
+            labelTx="auth.resetPassword.confirmNewPassword"
+            status={formik.errors.ConfirmPassword ? "error" : undefined}
+            helper={formik.errors.ConfirmPassword}
+            onChangeText={formik.handleChange("ConfirmPassword")}
+            // secureTextEntry
           />
         </View>
         <View

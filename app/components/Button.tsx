@@ -141,7 +141,7 @@ const $baseTextStyle: TextStyle = {
   flexShrink: 1,
   flexGrow: 0,
   zIndex: 2,
-  color: colors.palette.neutral100,
+  color: colors.palette.neutral400,
 }
 
 const $rightAccessoryStyle: ViewStyle = { marginStart: spacing.extraSmall, zIndex: 1 }
@@ -162,10 +162,10 @@ const $viewPresets = {
   filled: [
     $baseViewStyle,
     {
-      backgroundColor: colors.cta01,
+      backgroundColor: colors.palette.secondary700,
       borderRadius:spacing.small,
       borderWidth: 1,
-            borderColor: colors.cta01,
+            borderColor: colors.palette.neutral400,
 
 
 

@@ -65,7 +65,6 @@ const dispatch = useAppDispatch()
 
 
 
-  //169277247355-s60jp8rqid0tafp89dgqb79re9233838.apps.googleusercontent.com
 
 
 
@@ -189,22 +188,22 @@ const body:LoginDto = {
                   onPress={submitForm}
                   // disabled={_isLoginLoading}
                 />
-                <Spacer size="medium" />
+                {/* <Spacer size="medium" />
                 <View style={$divider}>
                   <View style={$line} />
                   <Text tx="common.or" preset="inactive" />
                   <View style={$line} />
                 </View>
-                <Spacer size="small" />
+                <Spacer size="small" /> */}
                 {/* <FacebookButton onPress={onFacebookLogin} type="login" /> */}
                 {/* <Spacer size="extraLarge" /> */}
 
-                <GoogleSigninButton
+                {/* <GoogleSigninButton
           size={GoogleSigninButton.Size.Standard}
           color={GoogleSigninButton.Color.Light} 
           style={$appleButtonStyle}
           />
-        
+         */}
 
                 <Spacer size="extraLarge" />
 

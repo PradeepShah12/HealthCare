@@ -10,40 +10,45 @@ import { View } from "react-native"
 import { LineChart } from "react-native-gifted-charts"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
-interface HeartRateData {
+interface StepRateData {
   id: string;
-  heartRate: number;
+  step: number;
   timestamp: string;
 }
 interface StepTrackerScreenProps extends AppStackScreenProps<"StepTracker"> {}
 
 export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function StepTrackerScreen() {
-  const [currentHeartRate, setCurrentHeartRate] = useState<number>(0);
-  const [heartRateHistory, setHeartRateHistory] = useState<HeartRateData[]>([]);
-  const [newHeartRate, setNewHeartRate] = useState<string>("");
+  const [currentStepRate, setCurrentStepRate] = useState<number>(0);
+  const [stepRateHistory, setStepRateHistory] = useState<StepRateData[]>([]);
+  const [newStepRate, setNewStepRate] = useState<string>("");
+  const [TotalStepsTaken, setTotalStepsTake] = useState<number>(0);
 
-  const addHeartRate = () => {
-    const parsedHeartRate = parseInt(newHeartRate, 10);
-    if (!isNaN(parsedHeartRate)) {
-      const newEntry: HeartRateData = {
+  const addStepRate = () => {
+    const parsedStepRate = parseInt(newStepRate, 10);
+    if (!isNaN(parsedStepRate)) {
+      const newEntry: StepRateData = {
         id: Math.random().toString(),
-        heartRate: parsedHeartRate,
+        step: parsedStepRate,
         timestamp: new Date().toDateString(),
       };
-      setHeartRateHistory(prevState => [...prevState, newEntry]);
-      setCurrentHeartRate(parsedHeartRate);
-      setNewHeartRate("");
+      setTotalStepsTake(prev=>prev+parsedStepRate)
+
+      setStepRateHistory(prevState => [...prevState, newEntry]);
+      setCurrentStepRate(parsedStepRate);
+      setNewStepRate("");
     }
   };
 
-  const deleteHeartRate = (id: string) => {
-    const deletedHeartRate = heartRateHistory.find(entry => entry.id === id)?.heartRate || 0;
-    setHeartRateHistory(prevState => prevState.filter(entry => entry.id !== id));
-    setCurrentHeartRate(prevState => prevState === deletedHeartRate ? 0 : prevState);
+  const deleteStepRate = (id: string,newStepRate:string) => {
+    setTotalStepsTake(prev=>prev-parseInt(newStepRate))
+
+    const deletedStepRate = stepRateHistory.find(entry => entry.id === id)?.step || 0;
+    setStepRateHistory(prevState => prevState.filter(entry => entry.id !== id));
+    setCurrentStepRate(prevState => prevState === deletedStepRate ? 0 : prevState);
   };
 
-  const chartData = heartRateHistory.map(entry => ({ value: entry.heartRate }));
-  const formattedHistory: { [key: string]: HeartRateData[] } = heartRateHistory.reduce((acc, entry) => {
+  const chartData = stepRateHistory.map(entry => ({ value: entry.step }));
+  const formattedHistory: { [key: string]: StepRateData[] } = stepRateHistory.reduce((acc, entry) => {
     const timestamp = new Date(entry.timestamp);
     const month = timestamp.toLocaleString('default', { month: 'long' });
     const year = timestamp.getFullYear();
@@ -55,11 +60,12 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
     return acc;
   }, {});
   return (
-    <Screen style={styles.root} preset="fixed" safeAreaEdges={["top"]}>
+    <Screen style={styles.root} preset="scroll" safeAreaEdges={["top"]}>
 
       <View style={styles.container}>
         <Text style={styles.title}>Steps Monitor</Text>
-        <Text style={styles.currentHeartRate}>Current Steps: {currentHeartRate}</Text>
+        <Text style={styles.currentStepRate}>Current Steps: {currentStepRate}</Text>
+        <Text style={styles.currentStepRate}>Toal Steps: {TotalStepsTaken}</Text>
 
         <LineChart 
         yAxisColor={colors.palette.neutral100}
@@ -74,13 +80,13 @@ color1={colors.palette.neutral100}
       <View style={styles.inputContainer}>
         <TextField
           inputWrapperStyle={styles.input}
-          placeholder="Enter new heart rate"
+          placeholder="Enter new steps taken"
           
           keyboardType="numeric"
-          value={newHeartRate}
-          onChangeText={text => setNewHeartRate(text)}
+          value={newStepRate}
+          onChangeText={text => setNewStepRate(text)}
         />
-        <Button text="Add Steps" onPress={addHeartRate} style={styles.addButton} />
+        <Button text="Add Steps" onPress={addStepRate} style={styles.addButton} />
       </View>
       {Object.entries(formattedHistory).map(([date, entries]) => (
         <View key={date}>
@@ -91,8 +97,8 @@ color1={colors.palette.neutral100}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
               <View style={styles.historyItem}>
-                <Text>{item.timestamp}: {item.heartRate}</Text>
-                <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} />
+                <Text>{item.timestamp}: {item.step}</Text>
+                <Button text="Delete" onPress={() => deleteStepRate(item.id,item.step)} style={styles.deleteButton} />
               </View>
             )}
             contentContainerStyle={{paddingBottom:calculateRelativeHeight(500)}}
@@ -121,13 +127,14 @@ const styles = StyleSheet.create({
     marginBottom: spacing.small,
     color: colors.palette.neutral100,
   },
-  currentHeartRate: {
+  currentStepRate: {
     marginBottom: spacing.medium,
     color: colors.palette.neutral100,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent:'space-between',
     paddingHorizontal: spacing.medium,
     marginBottom: spacing.medium,
     minWidth:'90%'
@@ -138,7 +145,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     // paddingHorizontal: 12,
     marginRight: 8,
-    minWidth:calculateRelativeWidth(220)
+    minWidth:calculateRelativeWidth(180)
   },
   addButton: {
     minWidth: calculateRelativeWidth(120),

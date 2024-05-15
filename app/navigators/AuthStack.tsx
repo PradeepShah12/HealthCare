@@ -42,11 +42,11 @@ export const AuthStack = () => {
       initialRouteName="Login"
     >
       <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="SignUpWithEmail" component={SignupWithEmailScreen} />
+      <Stack.Screen name="SignUpWithEmail" component={SignupWithEmailScreen} options={{title:"Sign Up",headerShown:true}} />
     
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{title:"Forgot Password",headerShown:true}}  />
       <Stack.Screen name="ForgotPasswordEmailSent" component={ForgotPasswordEmailSentScreen} />
-      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{title:"Reset Password",headerShown:true}}  />
 
 
     </Stack.Navigator>

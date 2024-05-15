@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { observer } from "mobx-react-lite";
-import { StyleSheet, View, FlatList, TouchableOpacity, ViewStyle } from "react-native";
+import { StyleSheet, View, FlatList, TouchableOpacity, ViewStyle, TextStyle } from "react-native";
 import { AppStackScreenProps, navigate } from "app/navigators";
 import { Screen, Text, Button, Spacer } from "app/components";
 import { $globalViewStyles, colors, spacing, typography } from "app/theme";
@@ -8,6 +8,8 @@ import StepTracker from "app/components/StepTracker";
 import HeartRateMonitor from "app/components/HeartRateMonitor";
 import SleepTracker from "app/components/SleeepTracker";
 import { DynamicIcon } from "app/components/DynamicIcon";
+import { LinearGradient } from "expo-linear-gradient";
+import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions";
 
 interface ActivityItem {
   id: string;
@@ -46,11 +48,19 @@ export const DashboardScreen: FC<DashboardScreenProps> = observer(function Dashb
 
 {Actions.map((item,index)=>{
   return (
+    <TouchableOpacity  key={item.id} onPress={()=>navigate(item.navigationKey)} >
 
-    <TouchableOpacity  key={item.id} onPress={()=>navigate(item.navigationKey)} style={[styles.card, $globalViewStyles.shadow,$globalViewStyles.rowCenter,$globalViewStyles.justifyContentBetween]}>
-      <Text text={item.name}/>
-      <DynamicIcon iconName={item.icon}/>
-  </TouchableOpacity>
+<LinearGradient  // Background Linear Gradient
+        colors={['rgba(0,0,0,0.4)', 'transparent']}
+        start={[0.1,0]}
+        end={[0,1]}
+        style={styles.card}>
+
+      <Text text={item.name} preset="h3bold" style={$titleStyle}/>
+        <DynamicIcon iconName={item.icon} iconSize={calculateRelativeHeight(50)} iconColor={colors.palette.neutral100}/>
+        </LinearGradient>
+        </TouchableOpacity>
+
   )
 })}
 </View>
@@ -94,17 +104,16 @@ const styles = StyleSheet.create({
   },
   card: {
     borderRadius: 8,
-    elevation: 2,
     marginBottom: spacing.medium,
     paddingVertical:spacing.extraMedium,
     paddingHorizontal:spacing.small,
+    width:calculateRelativeWidth(160),
 
-    width:'45%',
-    backgroundColor:'#6b99f5'
+    height:calculateRelativeHeight(150),
+    backgroundColor:'#6b99f5',
+alignItems:'center',
+justifyContent:'space-evenly'
 
-// alignItems:'center'
-    // padding: spacing.medium,
-    // minw: "48%", // Adjust according to your layout
   },
   cardTitle: {
     fontSize: spacing.large,
@@ -144,3 +153,7 @@ export default DashboardScreen;
 
 
 const $listContainerStyle:ViewStyle={flexDirection:'row',flexWrap:'wrap',justifyContent:'space-between'}
+
+const $titleStyle:TextStyle={
+  color:colors.palette.neutral100
+}

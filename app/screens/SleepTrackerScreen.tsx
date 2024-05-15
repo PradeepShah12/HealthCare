@@ -102,6 +102,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: spacing.medium,
     marginBottom: spacing.medium,
+    justifyContent:'space-between',
+
     minWidth: "90%",
   },
   input: {

@@ -125,7 +125,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     marginBottom: spacing.medium,
-    minWidth:'90%'
+    minWidth:'90%',
+    justifyContent:'space-between',
+
   },
   input: {
     borderWidth: 1,
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     // paddingHorizontal: 12,
     marginRight: 8,
-    minWidth:calculateRelativeWidth(220)
+    minWidth:calculateRelativeWidth(180)
   },
   addButton: {
     minWidth: calculateRelativeWidth(120),

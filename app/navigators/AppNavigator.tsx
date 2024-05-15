@@ -24,6 +24,7 @@ import { AuthStack } from "./AuthStack"
 import { LoggedInNavigator } from "./LoggedInNavigator"
 import { useAppSelector } from "app/store"
 import { DynamicIcon } from "app/components/DynamicIcon"
+import { AppHeader } from "app/components"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -77,8 +78,10 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
   console.log(isAuthenticated,'is authenticatedd ')
   return (
     <Stack.Navigator
-      screenOptions={{ headerShown: false, navigationBarColor: colors.danger}}
+      screenOptions={{ headerShown: true,
+        header:()=><AppHeader/>,navigationBarColor: colors.danger}}
       initialRouteName={isAuthenticated ? "LoggedIn" : "Demo"}
+    
     >
       {isAuthenticated ? (
         <>
@@ -90,7 +93,7 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
         </>
       ) : (
         <>
-                  <Stack.Screen name="Demo" component={AuthStack} />
+                  <Stack.Screen options={{headerShown:false}} name="Demo" component={AuthStack} />
 
           {/* <Stack.Screen name="Login" component={Screens.LoginScreen} /> */}
         </>
@@ -112,10 +115,10 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 			<Stack.Screen name="WaterReminder"  component={Screens.WaterReminderScreen} options={{headerShown:true,title:"Hydration Reminder",headerBackTitle:'back',
         headerRight:()=> <DynamicIcon iconName="user-circle" iconSize={30} iconFamily="FontAwesome"  />
       }} />
-			<Stack.Screen name="BodyMeasurement" component={Screens.BodyMeasurementScreen} />
-			<Stack.Screen name="NutrititonTracker" component={Screens.NutrititonTrackerScreen} />
-			<Stack.Screen name="AddMeal" component={Screens.AddMealScreen} />
-			<Stack.Screen name="MealHistory" component={Screens.MealHistoryScreen} />
+			<Stack.Screen name="BodyMeasurement" component={Screens.BodyMeasurementScreen} options={{title:"BMI",headerShown:true}} />
+			<Stack.Screen name="NutrititonTracker" component={Screens.NutrititonTrackerScreen} options={{title:"Nutrition Tracker",headerShown:true}}  />
+			<Stack.Screen name="AddMeal" component={Screens.AddMealScreen} options={{title:"Add Meal",headerShown:true}} />
+			<Stack.Screen name="MealHistory" component={Screens.MealHistoryScreen}  options={{title:"Meal History",headerShown:true}}  />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

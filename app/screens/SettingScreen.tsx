@@ -64,7 +64,7 @@ const {navigation} = props
 
       <Text text="Version 0.0.1" preset="h3Inactive" style={$globalTextStyles.center} />
       <Spacer size="medium" />
-      <Button text="Logout" style={$logoutStyle} onPress={handleLogout} />
+      <Button text="Logout" preset="filled" onPress={handleLogout} />
 
     </Screen>
   )

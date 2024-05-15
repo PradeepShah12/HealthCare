@@ -9,8 +9,10 @@ import ConfettiCannon from "react-native-confetti-cannon";
 
 import * as Notifications from "expo-notifications";
 import { DynamicIcon } from "app/components/DynamicIcon"
-import { $globalViewStyles, colors } from "app/theme"
-import { calculateRelativeHeight } from "app/utils/calculateRelativeDimensions"
+import { $globalViewStyles, colors, spacing } from "app/theme"
+import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions"
+import { LinearGradient } from "expo-linear-gradient"
+import { $globalTextStyles } from "app/theme/styles"
 
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
@@ -86,7 +88,7 @@ async function scheduleNotification() {
       },
       trigger: {
         repeats: true,
-        seconds: reminderTime,
+        seconds: reminderTime*60,
       },
     });
   });
@@ -148,36 +150,32 @@ async function scheduleNotification() {
 
   return (
     <Screen style={$root} preset="scroll" safeAreaEdges={["top"]} contentContainerStyle={styles.container}>
-   
-
-   {showConfetti && renderConfetti()}
-      {/* Water Goal */}
       <View style={[styles.waterGoalContainer,$globalViewStyles.rowCenter,$globalViewStyles.justifyContentBetween]}>
-        <Text style={styles.blueText} preset="h2">Set The Target</Text>
+  
+  <Text style={styles.blueText} preset="h2">Set The Target</Text>
+
 <Spacer size="medium" orientation="width"/>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text preset="h2" style={[styles.grayText]}>
-            {waterGoal} mL{" "}
-          </Text>
-          {/* Add Goal */}
-          <TouchableOpacity
-            style={{ padding: 5 }}
-            onPress={() => setWaterGoal(waterGoal + 250)}
-          >
-            <DynamicIcon iconName="add-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{ padding: 5 }}
-            onPress={() => setWaterGoal(waterGoal - 250)}
-          >
-            <DynamicIcon iconName="remove-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
-          </TouchableOpacity>
-        </View>
-      </View>
+  <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <Text preset="h2" style={[styles.grayText]}>
+      {waterGoal} mL{" "}
+    </Text>
+    {/* Add Goal */}
+    <TouchableOpacity
+      style={{ padding: 5 }}
+      onPress={() => setWaterGoal(waterGoal + 250)}
+    >
+      <DynamicIcon iconName="add-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={{ padding: 5 }}
+      onPress={() => setWaterGoal(waterGoal - 250)}
+    >
+      <DynamicIcon iconName="remove-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
+    </TouchableOpacity>
+  </View>
+</View>
 
-      {/* ProgressView */}
-
-      <View
+<View
         style={{
           // flexDirection: "row",
           // width: "90%",
@@ -194,7 +192,6 @@ async function scheduleNotification() {
           </Text>
           <Spacer size="small" orientation="width"/>
 
-          <Text text="You've drunk" preset="h2" style={[styles.grayText]}/> 
         </View>
 
         {/* Progress Bar */}
@@ -208,6 +205,20 @@ async function scheduleNotification() {
           />
         </View> */}
       </View>
+{showConfetti&&    <LinearGradient
+style={{padding:spacing.small,borderRadius:spacing.small,maxWidth:calculateRelativeWidth(350),minHeight:calculateRelativeHeight(150),alignItems:'center',justifyContent:'center',alignSelf:'center'}}  // Background Linear Gradient
+        colors={['#85FFBD', '#FFFB7D']}
+        // start={[0.1,0]}
+        // end={[0,1]}
+       ><Text style={$globalTextStyles.center} text="Congratulations!! You've achieved it!!" preset="h2bold"/>
+</LinearGradient>
+}
+   {showConfetti && renderConfetti()}
+      {/* Water Goal */}
+   
+
+      {/* ProgressView */}
+
 
       {/* Add Water */}
       <View>
@@ -249,18 +260,18 @@ async function scheduleNotification() {
 
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text preset="h2" style={[styles.grayText]}>
-            {reminderTime} Sec{" "}
+            {reminderTime} Mins{" "}
           </Text>
           
           <TouchableOpacity
             style={{ padding: 5 }}
-            onPress={() => setReminderTime(reminderTime + 60)}
+            onPress={() => setReminderTime(reminderTime + 10)}
           >
             <DynamicIcon iconName="add-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
           </TouchableOpacity>
           <TouchableOpacity
             style={{ padding: 5 }}
-            onPress={() => setReminderTime(reminderTime - 60)}
+            onPress={() => setReminderTime(reminderTime - 10)}
           >
             <DynamicIcon iconName="remove-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
           </TouchableOpacity>

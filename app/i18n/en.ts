@@ -20,6 +20,7 @@ const en = {
     fullName:"Full Name",
     phoneNumber:"Phone Number",
     or: "or continue with",
+    country:"Country",
     next: "Next",
     confirmAccountSetup: "Confirm Account Setup",
     loading: "Loading...",
@@ -39,7 +40,12 @@ const en = {
     invite:"Invite",
     friends:"Friends",
     conversation:"Conversations",
-    notifications:"Notifications"
+    notifications:"Notifications",
+    age:"Age",
+    weight:"Weight in KG",
+    height:"Height in CM",
+    Otp:"OTP",
+    dateOfBirth:"Date Of Birth"
   },
 
   placeholders: {

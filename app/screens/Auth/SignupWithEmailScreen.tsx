@@ -15,8 +15,7 @@ import { useAppDispatch } from "../../store"
 
 import { AuthStackScreenProps } from "../../navigators/AuthStack"
 import { LogoTextHeader } from "../../components/LogoTextHeader"
-import OTPInput from "../../components/OTPInput";
-import { Divider } from "react-native-paper";
+
 import { calculateRelativeHeight, calculateRelativeWidth } from "../../utils/calculateRelativeDimensions";
 import { AxiosError } from "axios";
 import { AuthService } from "../../services/api/Auth/auth.api";
@@ -26,19 +25,31 @@ import { ImageStyle } from "react-native-fast-image";
 import { ApiErrorResponse } from "apisauce";
 
 interface JoinWithEmail {
-  fullName: string,
+  firstName: string,
+  lastName:string,
   email: string,
   username: string,
-  phoneNumber: string
+  password: string
+  height:string,
+  weight:string,
+  country:string,
+  dateOfBirth:string
+
+
 }
 
 interface SignUpWithEmailScreenProps extends AuthStackScreenProps<"SignUpWithEmail"> { }
 
 const validation = Yup.object().shape({
-  fullName: Yup.string().required("Full Name is required"),
+  firstName: Yup.string().required("First Name is required"),
+  lastName:Yup.string().required("Last Name is required"),
+  country:Yup.string().required("Country is required"),
+  dateOfBirth:Yup.string().required("Country is required"),
+  height:Yup.string().required("Height is required"),
+  weight:Yup.string().required("Weight is required"),
   email: Yup.string().required("Email is required").email("Enter valid email"),
   username: Yup.string().required("Username is required"),
-  phoneNumber: Yup.string().required("Phone number is required"),
+  password: Yup.string().required("Phone number is required"),
 })
 
 export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => {
@@ -46,10 +57,16 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
   const [otp, setOtp] = useState<string>('1')
   const _navigation = props.navigation
   const formInitialValues: JoinWithEmail = {
-    fullName: "",
+    firstName: "",
+    lastName:"",
     email: "",
     username: "",
-    phoneNumber: ""
+    password: "",
+    height:"",
+    weight:"",
+    country:"",
+    dateOfBirth:""
+
   }
 
   const dispatch = useAppDispatch()
@@ -84,9 +101,9 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
   }
 
   return (
-    <Screen style={$root} contentContainerStyle={$rootContainer} preset="scroll" safeAreaEdges={["top", "bottom"]}>
+    <Screen style={$root}  preset="auto" safeAreaEdges={["top", "bottom"]}>
       <View style={$globalViewStyles.center}>
-        <Spacer size="medium" />
+        {/* <Spacer size="medium" /> */}
         <LogoTextHeader />
         <Text tx="auth.signup.joinWithEmail" preset="h3bold" />
         <Spacer size="tiny" />
@@ -95,8 +112,9 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
       <Spacer size="huge" />
 
       {/* <AutoImage source={Logo} style={$imageStyle} /> */}
-      <View>
+      <View >
         <Formik
+        
           initialValues={formInitialValues}
           onSubmit={(values: JoinWithEmail) => {
             Keyboard.dismiss()
@@ -107,16 +125,25 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
           validateOnBlur={false}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
-            <View>
-              {/* <TextField
-                labelTx="common.fullName"
-                value={values.fullName}
+            <View >
+              <TextField
+                labelTx="common.firstName"
+                value={values.firstName}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("fullName")}
-                status={errors.fullName ? "error" : null}
-                helper={errors.fullName}
-                onBlur={handleBlur("fullName")}
-              /> */}
+                onChangeText={handleChange("firstName")}
+                status={errors.firstName ? "error" : null}
+                helper={errors.firstName}
+                onBlur={handleBlur("firstName")}
+              />
+                   <TextField
+                labelTx="common.lastName"
+                value={values.lastName}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("lastName")}
+                status={errors.lastName ? "error" : null}
+                helper={errors.lastName}
+                onBlur={handleBlur("lastName")}
+              />
               <TextField
                 labelTx="common.email"
                 value={values.email}
@@ -127,7 +154,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
                 onBlur={handleBlur("email")}
                 keyboardType="email-address"
               />
-              {/* <TextField
+           <TextField
                 labelTx="common.username"
                 value={values.username}
                 containerStyle={$textInputStyle}
@@ -135,17 +162,53 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
                 status={errors.username ? "error" : null}
                 helper={errors.username}
                 onBlur={handleBlur("username")}
-              />
+              /> 
               <TextField
-                labelTx="common.phoneNumber"
-                value={values.phoneNumber}
+                labelTx="common.password"
+                value={values.password}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("phoneNumber")}
-                status={errors.phoneNumber ? "error" : null}
-                helper={errors.phoneNumber}
-                onBlur={handleBlur("phoneNumber")}
+                onChangeText={handleChange("password")}
+                status={errors.password ? "error" : null}
+                helper={errors.password}
+                onBlur={handleBlur("password")}
                 keyboardType="phone-pad"
-              /> */}
+              /> 
+               <TextField
+                labelTx="common.height"
+                value={values.height}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("height")}
+                status={errors.height ? "error" : null}
+                helper={errors.height}
+                onBlur={handleBlur("height")}
+              /> 
+                <TextField
+                labelTx="common.weight"
+                value={values.weight}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("weight")}
+                status={errors.weight ? "error" : null}
+                helper={errors.weight}
+                onBlur={handleBlur("weight")}
+              /> 
+                  <TextField
+                labelTx="common.country"
+                value={values.country}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("country")}
+                status={errors.country ? "error" : null}
+                helper={errors.country}
+                onBlur={handleBlur("country")}
+              /> 
+                       <TextField
+                labelTx="common.dateOfBirth"
+                value={values.dateOfBirth}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("dateOfBirth")}
+                status={errors.dateOfBirth ? "error" : null}
+                helper={errors.dateOfBirth}
+                onBlur={handleBlur("dateOfBirth")}
+              /> 
               <Button
                 preset="filled"
                 tx={initationPending ? "common.loading" : "auth.signup.createAccount"}
@@ -156,7 +219,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
           )}
         </Formik>
 
-        <Spacer size="medium" />
+        {/* <Spacer size="medium" />
         <View style={$divider}>
           <View style={$line} />
           <Text tx="common.or" preset="inactive" />
@@ -167,7 +230,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
           size={GoogleSigninButton.Size.Standard}
           color={GoogleSigninButton.Color.Light} 
           style={$appleButtonStyle}
-          />
+          /> */}
         <Spacer size="medium" />
         <View style={$haveAccountContainer}>
           <Text preset="body2" tx="auth.signup.alreadyHaveAccount" />
@@ -181,33 +244,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
           <Spacer size="medium" />
         </View>
       </View>
-      <Modalize ref={modalizeRef} withReactModal reactModalProps={{ presentationStyle: "formSheet", animationType: 'slide', }} modalStyle={$modalContainerStyle}>
-        <Spacer size="tiny" />
-        <Pressable onPress={() => modalizeRef.current.close()} style={$cancelBackground}>
-          <Icon name="close" size={spacing.large} />
-        </Pressable >
-        <Spacer size="medium" />
-        <Text preset="h3bold" text="Registration Successful!" />
-        <Text preset="body1Inactive" text="Please check your email and follow the instructions!" />
-        <Spacer size="small" />
-        <Divider />
-        <Spacer size="small" />
-        <Text preset="body1Inactive" text="Or you can verify by entering the 4-digit code below" />
-        <Spacer size="large" />
-        <OTPInput
-          code={otp}
-          editable={true}
-          setCode={setOtp}
-          maximumLength={4}
-          setIsOTPReady={(isReady) => {
-            if (isReady) {
-              setOtp('');
-              _navigation.navigate("CreatePassword");
-              modalizeRef.current.close();
-            }
-          }}
-        />
-      </Modalize>
+
     </Screen>
   )
 }
