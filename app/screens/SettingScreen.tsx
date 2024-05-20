@@ -28,7 +28,7 @@ const {navigation} = props
     dispatch(userLogout())
   }
   return (
-    <Screen style={$root} preset="auto" safeAreaEdges={['top']}>
+    <Screen style={$root} preset="auto" >
             <Spacer size="medium" />
 
       <Text text="Top Visits" preset="h3" />
@@ -36,7 +36,7 @@ const {navigation} = props
 
       <View style={[$globalViewStyles.row, $globalViewStyles.scrollSpaceAround]}>
         <SettingCard title={"Home"} iconName={"home"}  onPress={()=>navigation.navigate("Dashboard")}/>
-        <SettingCard title={"Profile"} iconName={"person"} onPress={()=>navigation.navigate('MyProfile')} />
+        <SettingCard title={"Profile"} iconName={"person"} onPress={()=>navigation.navigate('Profile')} />
       </View>
 
 

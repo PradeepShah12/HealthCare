@@ -26,8 +26,8 @@ export const SettingCard = (props: SettingCardProps) =>{
   const $styles = style
 
   return (
-      <Button {...props} style={[$globalViewStyles.row,$cardWrapper,$styles]}>
-        <DynamicIcon iconName={iconName} iconFamily={iconFamily}/>
+      <Button {...props} style={[$globalViewStyles.rowCenter,$cardWrapper,$styles,$globalViewStyles.center]}>
+        <DynamicIcon iconName={iconName} iconFamily={iconFamily} iconSize={20} />
         <Spacer size="medium" orientation="width"/>
         <Text text={title} preset="body2"/>
              </Button>

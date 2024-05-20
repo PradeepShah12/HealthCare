@@ -152,7 +152,7 @@ export const BodyMeasurementScreen: FC<BodyMeasurementScreenProps> = observer(fu
       // backgroundColor: colors.palette.neutral200, 
       borderRadius: 20, 
       padding: 20, 
-      width: '90%', 
+    //   width: '90%', 
       // elevation: 5, 
   }
   const $inputRow:ViewStyle={

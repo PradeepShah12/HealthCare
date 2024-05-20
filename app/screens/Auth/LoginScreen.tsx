@@ -13,11 +13,7 @@ import { $globalViewStyles, Device, colors, spacing } from "../../theme"
 import { Formik } from "formik"
 import * as Yup from "yup"
 import { AxiosError } from "axios"
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+
 import { navigate } from "../../navigators"
 
 import { LogoTextHeader } from "../../components/LogoTextHeader"
@@ -27,7 +23,6 @@ import { useAppDispatch } from "../../store"
 import { userLogin } from "../../store/Auth/auth.slice"
 import { LoginDto, LoginResponse } from "app/services/api/Auth/types"
 import { AuthService } from "app/services/api/Auth/auth.api"
-import { setUser } from "app/store/User/user.slice"
 import { setError } from "app/store/Error/error.slice"
 import { ApiErrorResponse } from "apisauce"
 import { useMutation } from "@tanstack/react-query"

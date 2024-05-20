@@ -29,7 +29,7 @@ const Actions = [
   { name: "Heartbeat Monitoring", id: '6', icon: "heart", navigationKey: "HeartRateMonitor" },
   { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlogScreen" },
   { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "CustomWorkoutPlanScreen" },
-  { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitoringScreen" },
+  { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitor" },
   { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurement" },
 ];
 

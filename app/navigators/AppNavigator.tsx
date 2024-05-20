@@ -54,6 +54,9 @@ export type AppStackParamList = {
 	NutrititonTracker: undefined
 	AddMeal: undefined
 	MealHistory: undefined
+	Profile: undefined
+	EditProfile: undefined
+	OxygenMonitor: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -79,7 +82,7 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: true,
-        header:()=><AppHeader/>,navigationBarColor: colors.danger}}
+        header:(props)=><AppHeader {...props}/>,navigationBarColor: colors.danger}}
       initialRouteName={isAuthenticated ? "LoggedIn" : "Demo"}
     
     >
@@ -119,6 +122,9 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 			<Stack.Screen name="NutrititonTracker" component={Screens.NutrititonTrackerScreen} options={{title:"Nutrition Tracker",headerShown:true}}  />
 			<Stack.Screen name="AddMeal" component={Screens.AddMealScreen} options={{title:"Add Meal",headerShown:true}} />
 			<Stack.Screen name="MealHistory" component={Screens.MealHistoryScreen}  options={{title:"Meal History",headerShown:true}}  />
+			<Stack.Screen name="Profile" component={Screens.ProfileScreen} />
+			<Stack.Screen name="EditProfile" component={Screens.EditProfileScreen} />
+			<Stack.Screen name="OxygenMonitor" component={Screens.OxygenMonitorScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
