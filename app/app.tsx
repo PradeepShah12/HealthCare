@@ -36,6 +36,7 @@ import { persistor, store } from "./store"
 import { Provider } from "react-redux"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import * as Notifications from 'expo-notifications';
+import { FitnessContext } from "./Context"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 if (__DEV__ && Platform.OS === "ios") {
@@ -144,15 +145,18 @@ function App(props: AppProps) {
         // hidden={hidden}
       />
     <PersistGate loading={null} persistor={persistor}>
+
       <QueryClientProvider client={queryClient} >
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <ErrorBoundary catchErrors={Config.catchErrors}>
         <GestureHandlerRootView style={$container}>
+          <FitnessContext>
           <AppNavigator
             linking={linking}
             initialState={initialNavigationState}
             onStateChange={onNavigationStateChange}
           />
+          </FitnessContext>
         </GestureHandlerRootView>
       </ErrorBoundary>
     </SafeAreaProvider>

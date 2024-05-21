@@ -20,15 +20,15 @@ interface ActivityItem {
 
 interface DashboardScreenProps extends AppStackScreenProps<"Dashboard"> {}
 const Actions = [
-  { name: "Swimming Tracker", id: '1', icon: "water", navigationKey: "SwimmingScreen" },
+  { name: "Swimming Tracker", id: '1', icon: "water", navigationKey: "SwimmingTracker" },
   { name: "Hydration Reminder", id: '2', icon: "alarm", navigationKey: "WaterReminder" },
   { name: "Steps Taken", id: '11', icon: "walk", navigationKey: "StepTracker" },
   { name: "Sleep Tracker", id: '12', icon: "moon", navigationKey: "SleepTracker" },
   { name: "Nutrition Tracker", id: '3', icon: "nutrition", navigationKey: "NutrititonTracker" },
-  { name: "Workout Monitoring", id: '4', icon: "fitness", navigationKey: "WorkoutMonitoringScreen" },
+  { name: "Workout Monitoring", id: '4', icon: "fitness", navigationKey: "WorkOut" },
   { name: "Heartbeat Monitoring", id: '6', icon: "heart", navigationKey: "HeartRateMonitor" },
-  { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlogScreen" },
-  { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "CustomWorkoutPlanScreen" },
+  { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlog" },
+  { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "WorkOut" },
   { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitor" },
   { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurement" },
 ];
@@ -48,7 +48,7 @@ export const DashboardScreen: FC<DashboardScreenProps> = observer(function Dashb
 
 {Actions.map((item,index)=>{
   return (
-    <TouchableOpacity  key={item.id} onPress={()=>navigate(item.navigationKey)} >
+    <TouchableOpacity  key={item.id} onPress={()=>navigate(item.navigationKey,{monitor:item?.name=="Workout Monitoring"?true:false})} >
 
 <LinearGradient  // Background Linear Gradient
         colors={['rgba(0,0,0,0.4)', 'transparent']}

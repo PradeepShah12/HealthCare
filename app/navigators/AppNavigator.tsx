@@ -57,6 +57,14 @@ export type AppStackParamList = {
 	Profile: undefined
 	EditProfile: undefined
 	OxygenMonitor: undefined
+	SwimmingTracker: undefined
+	WorkOut: undefined
+	WorkOutDetail: undefined
+	Fit: undefined
+	Rest: undefined
+	AddEditWorkout: undefined
+	HealthFitnessBlog: undefined
+	BlogDetail: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -125,6 +133,14 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 			<Stack.Screen name="Profile" component={Screens.ProfileScreen} />
 			<Stack.Screen name="EditProfile" component={Screens.EditProfileScreen} />
 			<Stack.Screen name="OxygenMonitor" component={Screens.OxygenMonitorScreen} />
+			<Stack.Screen name="SwimmingTracker" component={Screens.SwimmingTrackerScreen} />
+			<Stack.Screen name="WorkOut" component={Screens.WorkOutScreen} />
+			<Stack.Screen name="WorkOutDetail" component={Screens.WorkOutDetailScreen} />
+			<Stack.Screen name="Fit" component={Screens.FitScreen} />
+			<Stack.Screen name="Rest" component={Screens.RestScreen} />
+			<Stack.Screen name="AddEditWorkout" component={Screens.AddEditWorkoutScreen} />
+			<Stack.Screen name="HealthFitnessBlog" component={Screens.HealthFitnessBlogScreen} />
+			<Stack.Screen name="BlogDetail" component={Screens.BlogDetailScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
