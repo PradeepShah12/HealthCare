@@ -1,27 +1,59 @@
-import React, { FC } from "react"
-import { observer } from "mobx-react-lite"
-import { StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native"
-import { AppStackScreenProps } from "app/navigators"
-import { MealItem, NutritionSummary, Screen, Spacer, Text } from "app/components"
-import { useNavigation } from "@react-navigation/native"
-import { meals } from "./MealHistoryScreen"
-import { colors } from "app/theme"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import React, { FC, useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
+import { AppStackScreenProps } from "app/navigators";
+import { MealItem, NutritionSummary, Screen, Spacer, Text } from "app/components";
+import { useNavigation } from "@react-navigation/native";
+import { colors } from "app/theme";
+import axios from "axios";
+
+interface Meal {
+  id: string;
+  name: string;
+  calories: number;
+}
 
 interface NutrititonTrackerScreenProps extends AppStackScreenProps<"NutrititonTracker"> {}
 
 export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observer(function NutrititonTrackerScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  // Pull in navigation via hook
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    fetchIntake();
+  }, []);
+
+  const fetchIntake = async () => {
+    try {
+      const response = await axios.get("http://localhost:3001/api/user/nutrition/getIntake", {
+        params: {
+          UserID: "user123", // Replace with actual user ID
+        },
+      });
+      const data = response.data;
+      setMeals(data);
+    } catch (error) {
+      Alert.alert("Alert","Failed to fetch intake data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Screen style={styles.container} preset="scroll" safeAreaEdges={["top"]}>
+        <Text>Loading...</Text>
+      </Screen>
+    );
+  }
+
   return (
     <Screen style={styles.container} preset="scroll" safeAreaEdges={["top"]}>
       <View style={styles.content}>
-      <Text text="Nutrition Tracker" preset="h2bold"/>
-      <Spacer size="small"/>
+        <Text text="Nutrition Tracker" preset="h2bold"/>
+        <Spacer size="small"/>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddMeal')}>
           <Text style={styles.buttonText}>Add Meal</Text>
         </TouchableOpacity>
@@ -31,16 +63,15 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
       </View>    
       <Text text="Nutrition Summary" preset="h3bold"/>
       <Spacer size="small"/>
-
-      <NutritionSummary meal={meals[0]} />
+      {meals.length > 0 && <NutritionSummary meal={meals[0]} />}
       <Text text="Nutrition Log" preset="h3bold"/>
       <Spacer size="small"/>
       {meals.map(meal => (
         <MealItem key={meal.id} mealName={meal.name} calories={meal.calories} />
       ))}
     </Screen>
-  )
-})
+  );
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -79,14 +110,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   label: {
-    // fontFamily: typography.primary.normal,
     fontSize: 14,
     color: colors.text,
     marginBottom: 5,
   },
   value: {
-    // fontFamily: typography.primary.normal,
     fontSize: 16,
     color: colors,
   },
 });
+
+export default NutrititonTrackerScreen;

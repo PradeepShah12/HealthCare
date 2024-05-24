@@ -1,16 +1,16 @@
-import React, { FC, useState } from "react"
-import { observer } from "mobx-react-lite"
+import React, { FC, useState } from "react";
+import { observer } from "mobx-react-lite";
 import LottieView from 'lottie-react-native';
-
-import { View, ViewStyle, ScrollView } from "react-native"
-import { AppStackScreenProps } from "app/navigators"
-import { Button, Screen, Spacer, Text, TextField } from "app/components"
+import { ScrollView, View, ViewStyle } from "react-native";
+import { AppStackScreenProps } from "app/navigators";
+import { Button, Screen, Spacer, Text, TextField } from "app/components";
 import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions";
 import { colors, spacing } from "app/theme";
 import { PieChart } from "react-native-gifted-charts";
-// import { useStores } from "app/models"
+import { Alert } from "react-native";
 
 interface OxygenMonitorScreenProps extends AppStackScreenProps<"OxygenMonitor"> {}
+
 interface OxygenData {
   id: string;
   percent: number;
@@ -18,47 +18,48 @@ interface OxygenData {
 }
 
 export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(function OxygenMonitorScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
-  const [oxygenHistory, setOxygenHistory] = useState<OxygenData[]>([ { id: 'sunday',
-    percent: 40,
-    timestamp: new Date()}, { id: 'monday',
-    percent: 20,
-    timestamp: new Date()}]);
+  const [oxygenHistory, setOxygenHistory] = useState<OxygenData[]>([
+    { id: 'sunday', percent: 40, timestamp: new Date().toDateString() },
+    { id: 'monday', percent: 20, timestamp: new Date().toDateString() }
+  ]);
+  const [newOxygenPercent, setNewOxygenPercent] = useState<number>(0);
 
-    const [currentOxygenPercent, setCurrentOxygenPercent] = useState<number>(0);
-    const [newOxygenPercent, setNewOxygenPercent] = useState<number>(0);
-  
-    const addOxygenHistory = () => {
-      const newEntry: OxygenData = {
-        id: Math.random().toString(),
-        percent: newOxygenPercent,
-        timestamp: new Date().toDateString(),
-      };
-      setOxygenHistory(prevState => [...prevState, newEntry]);
-      setCurrentOxygenPercent(prevState => prevState + newOxygenPercent);
-      setNewOxygenPercent(0);
+  const addOxygenHistory = () => {
+    const newEntry: OxygenData = {
+      id: Math.random().toString(),
+      percent: newOxygenPercent,
+      timestamp: new Date().toDateString(),
     };
-  
-    const deleteOxygenHistory = (id: string) => {
-      const deletedOxygenPercent = oxygenHistory.find(entry => entry.id === id)?.percent || 0;
-      setOxygenHistory(prevState => prevState.filter(entry => entry.id !== id));
-      setCurrentOxygenPercent(prevState => prevState - deletedOxygenPercent);
-    };
+    setOxygenHistory(prevState => [...prevState, newEntry]);
+    setNewOxygenPercent(0);
 
-
-
-
-
-
+    // Call API endpoint to insert oxygen data
+    fetch('http://localhost:3001/user/activity/oxygen/insertheartbeat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        Percent: newOxygenPercent,
+        Timestamp: new Date().toISOString(),
+      }),
+    })
+    .then(response => {
+      if (response.ok) {
+        console.log("Oxygen data inserted successfully.");
+      } else {
+        Alert.alert("ERROR","Failed to insert oxygen data.");
+      }
+    })
+    .catch(error => {
+      Alert.alert("ERROR","Error inserting oxygen data:", error);
+    });
+  };
 
   const handleRefresh = () => {
     // Add logic to refresh data
   }
 
-  const handleViewDetails = () => {
-    // Add logic to navigate to details screen
-  }
   const chartData = oxygenHistory.map(entry => ({ value: entry.percent }));
 
   return (
@@ -70,28 +71,24 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
         <View style={$stats}>
           <View style={$stat}>
             <Text preset="h2bold" style={$statLabel}>Current O2 Saturation</Text>
-            <Text preset="h1" style={$statValue}>{oxygenHistory[oxygenHistory.length-1].percent}%</Text>
+            <Text preset="h1" style={$statValue}>{oxygenHistory[oxygenHistory.length - 1].percent}%</Text>
           </View>
         </View>
         <LottieView source={require("../../assets/lungs.json")}  style={{flex:1,height:calculateRelativeHeight(200)}} autoPlay loop />
         <View style={$inputContainer}>
-        <TextField
-          inputWrapperStyle={$input}
-          placeholder="Enter Oxygen Percent"
-          keyboardType="numeric"
-          // value={newSleepDuration.toString()}
-          onChangeText={text => setNewOxygenPercent(parseInt(text))}
-        />
-      </View>
-      <Button text="Add Sleep Record" onPress={addOxygenHistory} style={$addButton} />
-
+          <TextField
+            inputWrapperStyle={$input}
+            placeholder="Enter Oxygen Percent"
+            keyboardType="numeric"
+            value={newOxygenPercent.toString()}
+            onChangeText={text => setNewOxygenPercent(parseInt(text))}
+          />
+          <Button text="Add Oxygen Record" onPress={addOxygenHistory} style={$addButton} />
+        </View>
         <View style={$chartContainer}>
-
           <Text preset="h2bold" style={$chartTitle}>Historical Data</Text>
-          {/* Placeholder for chart - replace with actual chart component */}
           <View style={$chartPlaceholder}>
-          <PieChart data={chartData}  />
-
+            <PieChart data={chartData} />
           </View>
         </View>
         <Spacer size="large" />
@@ -117,7 +114,6 @@ const $scrollViewContent: ViewStyle = {
 
 const $header: ViewStyle = {
   alignItems: 'center',
-  // marginBottom: 20,
 }
 
 const $title: ViewStyle = {

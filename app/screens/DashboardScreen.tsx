@@ -28,7 +28,7 @@ const Actions = [
   { name: "Workout Monitoring", id: '4', icon: "fitness", navigationKey: "WorkOut" },
   { name: "Heartbeat Monitoring", id: '6', icon: "heart", navigationKey: "HeartRateMonitor" },
   { name: "Health & Fitness Blog", id: '7', icon: "newspaper", navigationKey: "HealthFitnessBlog" },
-  { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "WorkOut" },
+  { name: "Customizable workout plan", id: '8', icon: "options", navigationKey: "CustomWorkoutDietPlan" },
   { name: "Oxygen Monitoring", id: '9', icon: "pulse", navigationKey: "OxygenMonitor" },
   { name: "Body Measurement Index", id: '10', icon: "body", navigationKey: "BodyMeasurement" },
 ];

@@ -65,6 +65,7 @@ export type AppStackParamList = {
 	AddEditWorkout: undefined
 	HealthFitnessBlog: undefined
 	BlogDetail: undefined
+	CustomWorkoutDietPlan: undefined
 	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -141,6 +142,7 @@ const isAuthenticated= useAppSelector(state=>state.auth.isAuthenticated)
 			<Stack.Screen name="AddEditWorkout" component={Screens.AddEditWorkoutScreen} />
 			<Stack.Screen name="HealthFitnessBlog" component={Screens.HealthFitnessBlogScreen} />
 			<Stack.Screen name="BlogDetail" component={Screens.BlogDetailScreen} />
+			<Stack.Screen name="CustomWorkoutDietPlan" component={Screens.CustomWorkoutDietPlanScreen} />
 			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

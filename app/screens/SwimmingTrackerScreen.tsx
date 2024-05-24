@@ -1,6 +1,7 @@
-import React, { FC, useState } from "react"
+import React, { FC, useEffect, useState } from "react"
 import { observer } from "mobx-react-lite"
 import LottieView from 'lottie-react-native';
+import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from "axios"
 
 import { View, ViewStyle, ScrollView } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
@@ -8,6 +9,7 @@ import { Button, Screen, Spacer, Text, TextField } from "app/components"
 import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions";
 import { Device, colors, spacing } from "app/theme";
 import { PieChart } from "react-native-gifted-charts";
+import { Alert } from "react-native";
 // import { useStores } from "app/models"
 
 interface SwimmingTrackerScreenProps extends AppStackScreenProps<"SwimmingTracker"> {}
@@ -27,30 +29,50 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
   const [currentSwimmingDuration, setCurrentSwimmingDuration] = useState<number>(0);
   const [newSwimmingDuration, setNewSwimmingDuration] = useState<number>(0);
 
-  const addSwimmingHistory = () => {
+  useEffect(() => {
+    fetchSwimmingHistory();
+  }, []);
+
+  const fetchSwimmingHistory = async () => {
+    try {
+      const response = await axios.post("http://localhost:3001/user/activity/swimming/getswimming", {
+        UserID: "user123", // Replace with actual user ID
+        SDate: "2024-01-01", // Replace with actual start date
+        EDate: "2024-12-31"  // Replace with actual end date
+      });
+      const data = response.data;
+      setSwimmingHistory(data);
+      const totalDuration = data.reduce((total: number, entry: SwimmingData) => total + entry.duration, 0);
+      setCurrentSwimmingDuration(totalDuration);
+    } catch (error) {
+      Alert.alert("Error", "Failed to fetch swimming history.");
+    }
+  };
+
+  const addSwimmingHistory = async () => {
     const newEntry: SwimmingData = {
       id: Math.random().toString(),
       duration: newSwimmingDuration,
-      timestamp: new Date().toDateString(),
+      timestamp: new Date().toISOString(),
     };
-    setSwimmingHistory(prevState => [...prevState, newEntry]);
-    setCurrentSwimmingDuration(prevState => prevState + newSwimmingDuration);
-    setNewSwimmingDuration(0);
+
+    try {
+      const response = await axios.post("http://localhost:3001/user/activity/swimming/insertswimming", {
+        UserID: "user123", // Replace with actual user ID
+        Duration: newSwimmingDuration,
+      });
+      const data = response.data;
+      if (data.success) {
+        setSwimmingHistory(prevState => [...prevState, newEntry]);
+        setCurrentSwimmingDuration(prevState => prevState + newSwimmingDuration);
+        setNewSwimmingDuration(0);
+      } else {
+        Alert.alert("Error", "Failed to add swimming record.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to add swimming record.");
+    }
   };
-
-  const deleteSwimmingHistory = (id: string) => {
-    const deletedSwimmingDuration = swimmingHistory.find(entry => entry.id === id)?.duration || 0;
-    setSwimmingHistory(prevState => prevState.filter(entry => entry.id !== id));
-    setCurrentSwimmingDuration(prevState => prevState - deletedSwimmingDuration);
-  };
-
-  const handleRefresh = () => {
-    // Add logic to refresh data
-  }
-
-  const handleViewDetails = () => {
-    // Add logic to navigate to details screen
-  }
 
   const chartData = swimmingHistory.map(entry => ({ value: entry.duration }));
 

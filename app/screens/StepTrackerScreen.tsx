@@ -1,6 +1,6 @@
-import React, { FC, useState } from "react"
+import React, { FC, useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { FlatList, StatusBar, ViewStyle } from "react-native"
+import { FlatList, StatusBar, ViewStyle, Alert } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Button, Screen, Text, TextField } from "app/components"
 import { StyleSheet } from "react-native"
@@ -8,22 +8,43 @@ import { colors, spacing } from "app/theme"
 import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions"
 import { View } from "react-native"
 import { LineChart } from "react-native-gifted-charts"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import axios from 'axios';
+
 interface StepRateData {
   id: string;
   step: number;
   timestamp: string;
 }
+
 interface StepTrackerScreenProps extends AppStackScreenProps<"StepTracker"> {}
 
 export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function StepTrackerScreen() {
   const [currentStepRate, setCurrentStepRate] = useState<number>(0);
   const [stepRateHistory, setStepRateHistory] = useState<StepRateData[]>([]);
   const [newStepRate, setNewStepRate] = useState<string>("");
-  const [TotalStepsTaken, setTotalStepsTake] = useState<number>(0);
+  const [totalStepsTaken, setTotalStepsTaken] = useState<number>(0);
 
-  const addStepRate = () => {
+  useEffect(() => {
+    fetchStepRateHistory();
+  }, []);
+
+  const fetchStepRateHistory = async () => {
+    try {
+      const response = await axios.post("http://localhost:3001/api/user/activity/stepcounter/getSteps", {
+        UserID: "user123", // Replace with actual user ID
+        SDate: "2024-01-01", // Replace with actual start date
+        EDate: "2024-12-31"  // Replace with actual end date
+      });
+      const data = response.data;
+      setStepRateHistory(data);
+      const totalSteps = data.reduce((total: number, entry: StepRateData) => total + entry.step, 0);
+      setTotalStepsTaken(totalSteps);
+    } catch (error) {
+      Alert.alert("Error", "Failed to fetch step rate history.");
+    }
+  };
+
+  const addStepRate = async () => {
     const parsedStepRate = parseInt(newStepRate, 10);
     if (!isNaN(parsedStepRate)) {
       const newEntry: StepRateData = {
@@ -31,20 +52,41 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         step: parsedStepRate,
         timestamp: new Date().toDateString(),
       };
-      setTotalStepsTake(prev=>prev+parsedStepRate)
-
-      setStepRateHistory(prevState => [...prevState, newEntry]);
-      setCurrentStepRate(parsedStepRate);
-      setNewStepRate("");
+      try {
+        const response = await axios.post("http://localhost:3001/api/user/activity/stepcounter/insertsteps", {
+          UserID: "user123", // Replace with actual user ID
+          Steps: parsedStepRate,
+          Date: new Date().toISOString(),
+        });
+        const data = response.data;
+        if (data.success) {
+          setStepRateHistory(prevState => [...prevState, newEntry]);
+          setTotalStepsTaken(prevState => prevState + parsedStepRate);
+          setNewStepRate("");
+        } else {
+          Alert.alert("Error", "Failed to add step rate.");
+        }
+      } catch (error) {
+        Alert.alert("Error", "Failed to add step rate.");
+      }
     }
   };
 
-  const deleteStepRate = (id: string,newStepRate:string) => {
-    setTotalStepsTake(prev=>prev-parseInt(newStepRate))
-
-    const deletedStepRate = stepRateHistory.find(entry => entry.id === id)?.step || 0;
-    setStepRateHistory(prevState => prevState.filter(entry => entry.id !== id));
-    setCurrentStepRate(prevState => prevState === deletedStepRate ? 0 : prevState);
+  const deleteStepRate = async (id: string, stepRate: number) => {
+    try {
+      const response = await axios.delete("http://localhost:3001/api/user/activity/stepcounter/deletesteps", {
+        data: { UserID: "user123", StepID: id } // Replace with actual user ID and step ID
+      });
+      const data = response.data;
+      if (data.success) {
+        setStepRateHistory(prevState => prevState.filter(entry => entry.id !== id));
+        setTotalStepsTaken(prevState => prevState - stepRate);
+      } else {
+        Alert.alert("Error", "Failed to delete step rate.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to delete step rate.");
+    }
   };
 
   const chartData = stepRateHistory.map(entry => ({ value: entry.step }));
@@ -59,29 +101,29 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
     acc[formattedDate].push(entry);
     return acc;
   }, {});
+
   return (
     <Screen style={styles.root} preset="scroll" safeAreaEdges={["top"]}>
-
       <View style={styles.container}>
         <Text style={styles.title}>Steps Monitor</Text>
         <Text style={styles.currentStepRate}>Current Steps: {currentStepRate}</Text>
-        <Text style={styles.currentStepRate}>Toal Steps: {TotalStepsTaken}</Text>
-
-        <LineChart 
-        yAxisColor={colors.palette.neutral100}
-        yAxisTextStyle={{color:colors.palette.neutral100}}
-        xAxisLabelTextStyle={{color:colors.palette.neutral100}}
-color1={colors.palette.neutral100}
+        <Text style={styles.currentStepRate}>Total Steps: {totalStepsTaken}</Text>
+        <LineChart
+          yAxisColor={colors.palette.neutral100}
+          yAxisTextStyle={{ color: colors.palette.neutral100 }}
+          xAxisLabelTextStyle={{ color: colors.palette.neutral100 }}
+          color1={colors.palette.neutral100}
           stripColor={'red'} // extract colors from chartData
-
-        data={chartData} areaChart  areaChart4/>
+          data={chartData}
+          areaChart
+          areaChart4
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <TextField
           inputWrapperStyle={styles.input}
           placeholder="Enter new steps taken"
-          
           keyboardType="numeric"
           value={newStepRate}
           onChangeText={text => setNewStepRate(text)}
@@ -91,19 +133,19 @@ color1={colors.palette.neutral100}
       {Object.entries(formattedHistory).map(([date, entries]) => (
         <View key={date}>
           <Text style={styles.date}>{date}</Text>
-          <View style={{flexGrow:1}}>
-          <FlatList
-            data={entries}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.historyItem}>
-                <Text>{item.timestamp}: {item.step}</Text>
-                <Button text="Delete" onPress={() => deleteStepRate(item.id,item.step)} style={styles.deleteButton} />
-              </View>
-            )}
-            contentContainerStyle={{paddingBottom:calculateRelativeHeight(500)}}
-          />         
-           </View>
+          <View style={{ flexGrow: 1 }}>
+            <FlatList
+              data={entries}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => (
+                <View style={styles.historyItem}>
+                  <Text>{item.timestamp}: {item.step}</Text>
+                  <Button text="Delete" onPress={() => deleteStepRate(item.id, item.step)} style={styles.deleteButton} />
+                </View>
+              )}
+              contentContainerStyle={{ paddingBottom: calculateRelativeHeight(500) }}
+            />
+          </View>
         </View>
       ))}
     </Screen>
@@ -134,18 +176,17 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.medium,
     marginBottom: spacing.medium,
-    minWidth:'90%'
+    minWidth: '90%'
   },
   input: {
     borderWidth: 1,
     borderColor: colors.palette.primary100,
     borderRadius: 8,
-    // paddingHorizontal: 12,
     marginRight: 8,
-    minWidth:calculateRelativeWidth(180)
+    minWidth: calculateRelativeWidth(180)
   },
   addButton: {
     minWidth: calculateRelativeWidth(120),
@@ -163,6 +204,12 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: colors.palette.danger,
   },
+  date: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    paddingHorizontal: spacing.medium,
+    marginVertical: spacing.small,
+  }
 });
 
 export default StepTrackerScreen;

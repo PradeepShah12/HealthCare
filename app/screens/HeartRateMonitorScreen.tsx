@@ -1,26 +1,38 @@
-import React, { FC, useState } from "react"
-import { observer } from "mobx-react-lite"
-import { FlatList, ViewStyle } from "react-native"
-import { AppStackScreenProps } from "app/navigators"
-import { Button, Screen, Text, TextField } from "app/components"
-import { StyleSheet } from "react-native"
-import { colors, spacing } from "app/theme"
-import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions"
-import { View } from "react-native"
-import { LineChart } from "react-native-gifted-charts"
-// import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "app/models"
+import React, { FC, useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { Alert, FlatList, ViewStyle } from "react-native";
+import { AppStackScreenProps } from "app/navigators";
+import { Button, Screen, Text, TextField } from "app/components";
+import { StyleSheet } from "react-native";
+import { colors, spacing } from "app/theme";
+import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions";
+import { View } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
+import { useAppSelector } from "app/store";
+
 interface HeartRateData {
   id: string;
   heartRate: number;
   timestamp: string;
 }
-interface HeartRateMonitorScreenProps extends AppStackScreenProps<"HeartRateMonitor"> {}
 
-export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(function HeartRateMonitorScreen() {
+interface HeartRateMonitorScreenProps extends AppStackScreenProps<"HeartRateMonitor"> {
+  userID: string;
+}
+
+export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(function HeartRateMonitorScreen({ route }) {
+  const { id:userID } = useAppSelector(state=>state.user?.user?.id)
   const [currentHeartRate, setCurrentHeartRate] = useState<number>(0);
   const [heartRateHistory, setHeartRateHistory] = useState<HeartRateData[]>([]);
   const [newHeartRate, setNewHeartRate] = useState<string>("");
+
+  useEffect(() => {
+    // Fetch heart rate data using the appropriate API endpoint
+    fetch(`http://localhost:3003/user/activity/nutritionTracker/getHeartRate?UserID=${userID}&SDate=2024-05-01&EDate=2024-05-31`)
+      .then(response => response.json())
+      .then(data => setHeartRateHistory(data))
+      .catch(error =>Alert.alert("Error","Error fetching heart rate data:", error));
+  }, [userID]);
 
   const addHeartRate = () => {
     const parsedHeartRate = parseInt(newHeartRate, 10);
@@ -33,6 +45,29 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       setHeartRateHistory(prevState => [...prevState, newEntry]);
       setCurrentHeartRate(parsedHeartRate);
       setNewHeartRate("");
+
+      // Call API endpoint to insert heart rate data
+      fetch('http://localhost:3001/user/activity/heartbeat/insertheartbeat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          UserID: userID,
+          Beats: parsedHeartRate,
+          Timestamp: new Date().toISOString(),
+        }),
+      })
+      .then(response => {
+        if (response.ok) {
+          console.log("Heart rate data inserted successfully.");
+        } else {
+         Alert.alert("Error","Failed to insert heart rate data.");
+        }
+      })
+      .catch(error => {
+       Alert.alert("Error","Error inserting heart rate data:", error);
+      });
     }
   };
 
@@ -54,6 +89,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
     acc[formattedDate].push(entry);
     return acc;
   }, {});
+
   return (
     <Screen style={styles.root} preset="fixed" safeAreaEdges={["top"]}>
       <View style={styles.container}>
@@ -62,15 +98,16 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
 
         <LineChart 
           stripColor={'red'} // extract colors from chartData
-
-        data={chartData} areaChart  areaChart4/>
+          data={chartData} 
+          areaChart 
+          areaChart4
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <TextField
           inputWrapperStyle={styles.input}
           placeholder="Enter new heart rate"
-          
           keyboardType="numeric"
           value={newHeartRate}
           onChangeText={text => setNewHeartRate(text)}
@@ -81,23 +118,23 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
         <View key={date}>
           <Text style={styles.date}>{date}</Text>
           <View style={{flexGrow:1}}>
-          <FlatList
-            data={entries}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.historyItem}>
-                <Text>{item.timestamp}: {item.heartRate}</Text>
-                <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} />
-              </View>
-            )}
-            contentContainerStyle={{paddingBottom:calculateRelativeHeight(500)}}
-          />         
-           </View>
+            <FlatList
+              data={entries}
+              keyExtractor={item => item.id}
+              renderItem={({ item }) => (
+                <View style={styles.historyItem}>
+                  <Text>{item.timestamp}: {item.heartRate}</Text>
+                  <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} />
+                </View>
+              )}
+              contentContainerStyle={{paddingBottom:calculateRelativeHeight(500)}}
+            />         
+          </View>
         </View>
       ))}
     </Screen>
-  )
-})
+  );
+});
 
 const styles = StyleSheet.create({
   root: {
