@@ -28,7 +28,7 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
 
   const fetchIntake = async () => {
     try {
-      const response = await axios.get("http://192.168.18.12:3000/api/user/nutrition/getIntake", {
+      const response = await axios.get("https://60de-115-64-55-67.ngrok-free.app/api/user/nutrition/getIntake", {
         params: {
           UserID: UserID, // Replace with actual user ID
         },

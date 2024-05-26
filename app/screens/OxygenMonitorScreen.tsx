@@ -34,7 +34,7 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
     setNewOxygenPercent(0);
 
     // Call API endpoint to insert oxygen data
-    fetch('http://192.168.18.12:3000/user/activity/oxygen/insertheartbeat', {
+    fetch('https://60de-115-64-55-67.ngrok-free.app/user/activity/oxygen/insertheartbeat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

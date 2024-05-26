@@ -37,7 +37,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 
   const fetchSwimmingHistory = async () => {
     try {
-      const response = await axios.post("http://192.168.18.12:3000/user/activity/swimming/getswimming", {
+      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/user/activity/swimming/getswimming", {
         UserID: UserID, // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
@@ -59,7 +59,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
     };
 
     try {
-      const response = await axios.post("http://192.168.18.12:3000/user/activity/swimming/insertswimming", {
+      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/user/activity/swimming/insertswimming", {
         UserID: UserID, // Replace with actual user ID
         Duration: newSwimmingDuration,
       });

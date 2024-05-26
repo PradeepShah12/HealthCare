@@ -47,7 +47,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('http://192.168.18.12:3000/user/activity/heartbeat/insertheartbeat', {
+      fetch('https://60de-115-64-55-67.ngrok-free.app/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

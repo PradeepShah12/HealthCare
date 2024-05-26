@@ -19,7 +19,7 @@ export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> =
 
   const fetchPlans = () => {
     // Call the API endpoint to fetch custom workout and diet plans
-    fetch(`http://192.168.18.12:3000/user/activity/customWorkoutplan/customplan?id=${id}&Weight=${weight}&Height=${height}&DietType=${dietType}`)
+    fetch(`https://60de-115-64-55-67.ngrok-free.app/user/activity/customWorkoutplan/customplan?id=${id}&Weight=${weight}&Height=${height}&DietType=${dietType}`)
       .then(response => response.json())
       .then(data => {
         setWorkoutPlan(data.workoutPlan);

@@ -23,7 +23,7 @@ interface Meal {
 
 interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
-const API_BASE = "http://192.168.18.12:3000";
+const API_BASE = "https://60de-115-64-55-67.ngrok-free.app";
 
 export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealScreen() {
   const [cuisines, setCuisines] = useState<Cuisine[]>([
@@ -72,7 +72,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.get(`http://192.168.18.12:3000/user/activity/nutritionTracker/getFood`, {
+      const response = await axios.get(`https://60de-115-64-55-67.ngrok-free.app/user/activity/nutritionTracker/getFood`, {
         params: { CuisineID: cuisineId },
       });
       setFoods(response.data);
@@ -83,7 +83,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchMeals = async () => {
     try {
-      const response = await axios.get(`http://192.168.18.12:3000/user/activity/nutritionTracker/getMeals`);
+      const response = await axios.get(`https://60de-115-64-55-67.ngrok-free.app/user/activity/nutritionTracker/getMeals`);
       setMeals(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch meals");

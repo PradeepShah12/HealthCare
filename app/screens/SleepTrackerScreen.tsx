@@ -29,7 +29,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 
   const fetchSleepHistory = async () => {
     try {
-      const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/getSleepRecords", {
+      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/getSleepRecords", {
         UserID: UserID, // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
@@ -50,7 +50,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
       timestamp: new Date().toDateString(),
     };
     try {
-      const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/insertSleepRecord", {
+      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/insertSleepRecord", {
         UserID: UserID, // Replace with actual user ID
         SleepDuration: newSleepDuration,
         Date: new Date().toISOString(),
@@ -70,7 +70,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 
   const deleteSleepRecord = async (id: string) => {
     try {
-      const response = await axios.delete("http://192.168.18.12:3000/api/user/activity/sleep/deleteSleepRecord", {
+      const response = await axios.delete("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/deleteSleepRecord", {
         data: { UserID: UserID, SleepID: id } // Replace with actual user ID and sleep record ID
       });
       const data = response.data;
