@@ -21,18 +21,18 @@ interface HeartRateMonitorScreenProps extends AppStackScreenProps<"HeartRateMoni
 }
 
 export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(function HeartRateMonitorScreen({ route }) {
-  const { id: userID } = useAppSelector(state => state.user?.user?.id)
+  const { user } = useAppSelector(state => state.user)
   const [currentHeartRate, setCurrentHeartRate] = useState<number>(0);
   const [heartRateHistory, setHeartRateHistory] = useState<HeartRateData[]>([]);
   const [newHeartRate, setNewHeartRate] = useState<string>("");
 
   useEffect(() => {
     // Fetch heart rate data using the appropriate API endpoint
-    fetch(`http://localhost:3003/user/activity/nutritionTracker/getHeartRate?UserID=${userID}&SDate=2024-05-01&EDate=2024-05-31`)
+    fetch(`http://localhost:3003/user/activity/nutritionTracker/getHeartRate?UserID=${user.UserID}&SDate=2024-05-01&EDate=2024-05-31`)
       .then(response => response.json())
       .then(data => setHeartRateHistory(data))
       .catch(error => Alert.alert("Error", "Error fetching heart rate data:", error));
-  }, [userID]);
+  }, [user.UserID]);
 
   const addHeartRate = () => {
     const parsedHeartRate = parseInt(newHeartRate, 10);
@@ -47,13 +47,13 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('http://localhost:3000/user/activity/heartbeat/insertheartbeat', {
+      fetch('http://192.168.18.12:3000/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          UserID: userID,
+          UserID: user.UserID,
           Beats: parsedHeartRate,
           Timestamp: new Date().toISOString(),
         }),

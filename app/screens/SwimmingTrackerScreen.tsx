@@ -10,6 +10,7 @@ import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calcu
 import { Device, colors, spacing } from "app/theme";
 import { PieChart } from "react-native-gifted-charts";
 import { Alert } from "react-native";
+import { useAppSelector } from "app/store";
 // import { useStores } from "app/models"
 
 interface SwimmingTrackerScreenProps extends AppStackScreenProps<"SwimmingTracker"> { }
@@ -28,6 +29,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 
   const [currentSwimmingDuration, setCurrentSwimmingDuration] = useState<number>(0);
   const [newSwimmingDuration, setNewSwimmingDuration] = useState<number>(0);
+  const { UserID } = useAppSelector(state => state.user.user)
 
   useEffect(() => {
     fetchSwimmingHistory();
@@ -35,8 +37,8 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 
   const fetchSwimmingHistory = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/user/activity/swimming/getswimming", {
-        UserID: "user123", // Replace with actual user ID
+      const response = await axios.post("http://192.168.18.12:3000/user/activity/swimming/getswimming", {
+        UserID: UserID, // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
       });
@@ -57,8 +59,8 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
     };
 
     try {
-      const response = await axios.post("http://localhost:3000/user/activity/swimming/insertswimming", {
-        UserID: "user123", // Replace with actual user ID
+      const response = await axios.post("http://192.168.18.12:3000/user/activity/swimming/insertswimming", {
+        UserID: UserID, // Replace with actual user ID
         Duration: newSwimmingDuration,
       });
       const data = response.data;

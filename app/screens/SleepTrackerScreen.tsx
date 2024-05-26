@@ -8,6 +8,7 @@ import { PieChart } from "react-native-gifted-charts";
 import { observer } from "mobx-react-lite";
 import { LoggedInScreenProps } from "app/navigators/LoggedInNavigator";
 import axios from "axios";
+import { useAppSelector } from "app/store";
 
 interface SleepData {
   id: string;
@@ -21,7 +22,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
   const [currentSleepDuration, setCurrentSleepDuration] = useState<number>(0);
   const [sleepHistory, setSleepHistory] = useState<SleepData[]>([]);
   const [newSleepDuration, setNewSleepDuration] = useState<number>(0);
-
+  const { UserID } = useAppSelector(state => state.user.user)
   useEffect(() => {
     fetchSleepHistory();
   }, []);
@@ -29,7 +30,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
   const fetchSleepHistory = async () => {
     try {
       const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/getSleepRecords", {
-        UserID: "user123", // Replace with actual user ID
+        UserID: UserID, // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
       });
@@ -50,7 +51,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
     };
     try {
       const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/insertSleepRecord", {
-        UserID: "user123", // Replace with actual user ID
+        UserID: UserID, // Replace with actual user ID
         SleepDuration: newSleepDuration,
         Date: new Date().toISOString(),
       });
@@ -70,7 +71,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
   const deleteSleepRecord = async (id: string) => {
     try {
       const response = await axios.delete("http://192.168.18.12:3000/api/user/activity/sleep/deleteSleepRecord", {
-        data: { UserID: "user123", SleepID: id } // Replace with actual user ID and sleep record ID
+        data: { UserID: UserID, SleepID: id } // Replace with actual user ID and sleep record ID
       });
       const data = response.data;
       if (data.success) {

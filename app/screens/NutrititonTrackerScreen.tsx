@@ -6,6 +6,7 @@ import { MealItem, NutritionSummary, Screen, Spacer, Text } from "app/components
 import { useNavigation } from "@react-navigation/native";
 import { colors } from "app/theme";
 import axios from "axios";
+import { useAppSelector } from "app/store";
 
 interface Meal {
   id: string;
@@ -18,7 +19,7 @@ interface NutrititonTrackerScreenProps extends AppStackScreenProps<"NutrititonTr
 export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observer(function NutrititonTrackerScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
+  const { UserID } = useAppSelector(state => state.user.user)
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
     try {
       const response = await axios.get("http://192.168.18.12:3000/api/user/nutrition/getIntake", {
         params: {
-          UserID: "user123", // Replace with actual user ID
+          UserID: UserID, // Replace with actual user ID
         },
       });
       const data = response.data;

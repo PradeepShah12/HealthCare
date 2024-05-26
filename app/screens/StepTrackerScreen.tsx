@@ -8,7 +8,8 @@ import { colors, spacing } from "app/theme"
 import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions"
 import { View } from "react-native"
 import { LineChart } from "react-native-gifted-charts"
-import axios from 'axios';
+import axios from 'axios'
+import { useAppSelector } from "app/store"
 
 
 interface StepRateData {
@@ -20,6 +21,7 @@ interface StepRateData {
 interface StepTrackerScreenProps extends AppStackScreenProps<"StepTracker"> { }
 
 export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function StepTrackerScreen() {
+  const { UserID } = useAppSelector(state => state.user.user)
   const [currentStepRate, setCurrentStepRate] = useState<number>(0);
   const [stepRateHistory, setStepRateHistory] = useState<StepRateData[]>([]);
   const [newStepRate, setNewStepRate] = useState<string>("");
@@ -31,14 +33,19 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const fetchStepRateHistory = async () => {
     try {
-      const response = await axios.get("http://192.168.18.12:3000/api/user/activity/stepcounter/getsteps",
+      const response = await axios.post("http://192.168.18.12:3000/api/user/activity/stepcounter/getsteps",
         {
-          UserID: "user123", // Replace with actual user ID
+
+
+
+          UserID: UserID, // Replace with actual user ID
           SDate: "2024-01-01", // Replace with actual start date
-          EDate: "2024-12-31"  // Replace with actual end date
-        }
+          EDate: "2024-12-31",
+
+        }// Replace with actual end date
+
       );
-      console.log(response, 'response of fetch')
+      console.log(response.data, 'response of fetch')
       const data = response.data;
       setStepRateHistory(data);
       const totalSteps = data.reduce((total: number, entry: StepRateData) => total + entry.step, 0);
@@ -59,9 +66,10 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
       };
       try {
         const response = await axios.post("http://192.168.18.12:3000/api/user/activity/stepcounter/insertsteps", {
-          UserID: "user123", // Replace with actual user ID
+          UserID: UserID, // Replace with actual user ID
           Steps: parsedStepRate,
           Date: new Date().toISOString(),
+
         });
         const data = response.data;
         if (data.success) {
@@ -80,7 +88,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
   const deleteStepRate = async (id: string, stepRate: number) => {
     try {
       const response = await axios.delete("http://192.168.18.12:3000/api/user/activity/stepcounter/deletesteps", {
-        data: { UserID: "user123", StepID: id } // Replace with actual user ID and step ID
+        data: { UserID: UserID, StepID: id } // Replace with actual user ID and step ID
       });
       const data = response.data;
       if (data.success) {
@@ -136,18 +144,20 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         <Button text="Add Steps" onPress={addStepRate} style={styles.addButton} />
       </View>
       {Object.entries(formattedHistory).map(([date, entries]) => (
-        <View key={date}>
-          <Text style={styles.date}>{date}</Text>
+        <View key={entries[0]}>
           <View style={{ flexGrow: 1 }}>
             <FlatList
               data={entries}
               keyExtractor={item => item.id}
-              renderItem={({ item }) => (
-                <View style={styles.historyItem}>
-                  <Text>{item.timestamp}: {item.step}</Text>
-                  <Button text="Delete" onPress={() => deleteStepRate(item.id, item.step)} style={styles.deleteButton} />
-                </View>
-              )}
+              renderItem={({ item }) => {
+                const Format = new Date(item.Date)
+                return (
+                  <View style={styles.historyItem}>
+                    <Text>{Format.toLocaleString()}: {item.Steps}</Text>
+                    <Button text="Delete" onPress={() => deleteStepRate(item.id, item.step)} style={styles.deleteButton} />
+                  </View>
+                )
+              }}
               contentContainerStyle={{ paddingBottom: calculateRelativeHeight(500) }}
             />
           </View>

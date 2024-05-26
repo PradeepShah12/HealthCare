@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View, TextInput, FlatList, Alert } from "
 import { AppStackScreenProps } from "app/navigators";
 import { Screen, Text } from "app/components";
 import axios from "axios";
+import { useAppSelector } from "app/store";
 
 interface Cuisine {
   id: string;
@@ -22,7 +23,7 @@ interface Meal {
 
 interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
-const API_BASE = "http://localhost:3000";
+const API_BASE = "http://192.168.18.12:3000";
 
 export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealScreen() {
   const [cuisines, setCuisines] = useState<Cuisine[]>([
@@ -43,7 +44,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
     { id: "3", name: "Dinner" },
   ]);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
-
+  const { UserID } = useAppSelector(state => state.user.user)
   useEffect(() => {
     fetchCuisines();
   }, []);
@@ -71,7 +72,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3000/user/activity/nutritionTracker/getFood`, {
+      const response = await axios.get(`http://192.168.18.12:3000/user/activity/nutritionTracker/getFood`, {
         params: { CuisineID: cuisineId },
       });
       setFoods(response.data);
@@ -82,7 +83,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchMeals = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/user/activity/nutritionTracker/getMeals`);
+      const response = await axios.get(`http://192.168.18.12:3000/user/activity/nutritionTracker/getMeals`);
       setMeals(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch meals");
@@ -92,7 +93,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
   const addMeal = async () => {
     try {
       await axios.post(`http://localhost:3004/user/activity/nutritionTracker/InsertIntaker`, {
-        UserID: 1, // replace with actual user ID
+        UserID: UserID, // replace with actual user ID
         MealID: selectedMeal?.id,
       });
       alert("Meal added successfully!");
