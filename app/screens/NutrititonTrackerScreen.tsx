@@ -13,7 +13,7 @@ interface Meal {
   calories: number;
 }
 
-interface NutrititonTrackerScreenProps extends AppStackScreenProps<"NutrititonTracker"> {}
+interface NutrititonTrackerScreenProps extends AppStackScreenProps<"NutrititonTracker"> { }
 
 export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observer(function NutrititonTrackerScreen() {
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -27,7 +27,7 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
 
   const fetchIntake = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/user/nutrition/getIntake", {
+      const response = await axios.get("http://192.168.18.12:3000/api/user/nutrition/getIntake", {
         params: {
           UserID: "user123", // Replace with actual user ID
         },
@@ -35,7 +35,7 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
       const data = response.data;
       setMeals(data);
     } catch (error) {
-      Alert.alert("Alert","Failed to fetch intake data");
+      Alert.alert("Alert", "Failed to fetch intake data");
     } finally {
       setLoading(false);
     }
@@ -52,20 +52,20 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
   return (
     <Screen style={styles.container} preset="scroll" safeAreaEdges={["top"]}>
       <View style={styles.content}>
-        <Text text="Nutrition Tracker" preset="h2bold"/>
-        <Spacer size="small"/>
+        <Text text="Nutrition Tracker" preset="h2bold" />
+        <Spacer size="small" />
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddMeal')}>
           <Text style={styles.buttonText}>Add Meal</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MealHistory')}>
           <Text style={styles.buttonText}>Meal History</Text>
         </TouchableOpacity>
-      </View>    
-      <Text text="Nutrition Summary" preset="h3bold"/>
-      <Spacer size="small"/>
+      </View>
+      <Text text="Nutrition Summary" preset="h3bold" />
+      <Spacer size="small" />
       {meals.length > 0 && <NutritionSummary meal={meals[0]} />}
-      <Text text="Nutrition Log" preset="h3bold"/>
-      <Spacer size="small"/>
+      <Text text="Nutrition Log" preset="h3bold" />
+      <Spacer size="small" />
       {meals.map(meal => (
         <MealItem key={meal.id} mealName={meal.name} calories={meal.calories} />
       ))}

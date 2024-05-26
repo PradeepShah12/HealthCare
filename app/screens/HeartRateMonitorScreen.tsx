@@ -21,7 +21,7 @@ interface HeartRateMonitorScreenProps extends AppStackScreenProps<"HeartRateMoni
 }
 
 export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(function HeartRateMonitorScreen({ route }) {
-  const { id:userID } = useAppSelector(state=>state.user?.user?.id)
+  const { id: userID } = useAppSelector(state => state.user?.user?.id)
   const [currentHeartRate, setCurrentHeartRate] = useState<number>(0);
   const [heartRateHistory, setHeartRateHistory] = useState<HeartRateData[]>([]);
   const [newHeartRate, setNewHeartRate] = useState<string>("");
@@ -31,7 +31,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
     fetch(`http://localhost:3003/user/activity/nutritionTracker/getHeartRate?UserID=${userID}&SDate=2024-05-01&EDate=2024-05-31`)
       .then(response => response.json())
       .then(data => setHeartRateHistory(data))
-      .catch(error =>Alert.alert("Error","Error fetching heart rate data:", error));
+      .catch(error => Alert.alert("Error", "Error fetching heart rate data:", error));
   }, [userID]);
 
   const addHeartRate = () => {
@@ -47,7 +47,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('http://localhost:3001/user/activity/heartbeat/insertheartbeat', {
+      fetch('http://localhost:3000/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,16 +58,16 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
           Timestamp: new Date().toISOString(),
         }),
       })
-      .then(response => {
-        if (response.ok) {
-          console.log("Heart rate data inserted successfully.");
-        } else {
-         Alert.alert("Error","Failed to insert heart rate data.");
-        }
-      })
-      .catch(error => {
-       Alert.alert("Error","Error inserting heart rate data:", error);
-      });
+        .then(response => {
+          if (response.ok) {
+            console.log("Heart rate data inserted successfully.");
+          } else {
+            Alert.alert("Error", "Failed to insert heart rate data.");
+          }
+        })
+        .catch(error => {
+          Alert.alert("Error", "Error inserting heart rate data:", error);
+        });
     }
   };
 
@@ -96,10 +96,10 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
         <Text style={styles.title}>Heart Rate Monitor</Text>
         <Text style={styles.currentHeartRate}>Current Heart Rate: {currentHeartRate}</Text>
 
-        <LineChart 
+        <LineChart
           stripColor={'red'} // extract colors from chartData
-          data={chartData} 
-          areaChart 
+          data={chartData}
+          areaChart
           areaChart4
         />
       </View>
@@ -117,7 +117,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       {Object.entries(formattedHistory).map(([date, entries]) => (
         <View key={date}>
           <Text style={styles.date}>{date}</Text>
-          <View style={{flexGrow:1}}>
+          <View style={{ flexGrow: 1 }}>
             <FlatList
               data={entries}
               keyExtractor={item => item.id}
@@ -127,8 +127,8 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
                   <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} />
                 </View>
               )}
-              contentContainerStyle={{paddingBottom:calculateRelativeHeight(500)}}
-            />         
+              contentContainerStyle={{ paddingBottom: calculateRelativeHeight(500) }}
+            />
           </View>
         </View>
       ))}
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: spacing.medium,
     marginBottom: spacing.medium,
-    minWidth:'90%',
-    justifyContent:'space-between',
+    minWidth: '90%',
+    justifyContent: 'space-between',
 
   },
   input: {
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     // paddingHorizontal: 12,
     marginRight: 8,
-    minWidth:calculateRelativeWidth(180)
+    minWidth: calculateRelativeWidth(180)
   },
   addButton: {
     minWidth: calculateRelativeWidth(120),

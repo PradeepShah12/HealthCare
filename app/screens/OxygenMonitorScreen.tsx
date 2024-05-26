@@ -9,7 +9,7 @@ import { colors, spacing } from "app/theme";
 import { PieChart } from "react-native-gifted-charts";
 import { Alert } from "react-native";
 
-interface OxygenMonitorScreenProps extends AppStackScreenProps<"OxygenMonitor"> {}
+interface OxygenMonitorScreenProps extends AppStackScreenProps<"OxygenMonitor"> { }
 
 interface OxygenData {
   id: string;
@@ -34,7 +34,7 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
     setNewOxygenPercent(0);
 
     // Call API endpoint to insert oxygen data
-    fetch('http://localhost:3001/user/activity/oxygen/insertheartbeat', {
+    fetch('http://localhost:3000/user/activity/oxygen/insertheartbeat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -44,16 +44,16 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
         Timestamp: new Date().toISOString(),
       }),
     })
-    .then(response => {
-      if (response.ok) {
-        console.log("Oxygen data inserted successfully.");
-      } else {
-        Alert.alert("ERROR","Failed to insert oxygen data.");
-      }
-    })
-    .catch(error => {
-      Alert.alert("ERROR","Error inserting oxygen data:", error);
-    });
+      .then(response => {
+        if (response.ok) {
+          console.log("Oxygen data inserted successfully.");
+        } else {
+          Alert.alert("ERROR", "Failed to insert oxygen data.");
+        }
+      })
+      .catch(error => {
+        Alert.alert("ERROR", "Error inserting oxygen data:", error);
+      });
   };
 
   const handleRefresh = () => {
@@ -74,7 +74,7 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
             <Text preset="h1" style={$statValue}>{oxygenHistory[oxygenHistory.length - 1].percent}%</Text>
           </View>
         </View>
-        <LottieView source={require("../../assets/lungs.json")}  style={{flex:1,height:calculateRelativeHeight(200)}} autoPlay loop />
+        <LottieView source={require("../../assets/lungs.json")} style={{ flex: 1, height: calculateRelativeHeight(200) }} autoPlay loop />
         <View style={$inputContainer}>
           <TextField
             inputWrapperStyle={$input}
@@ -156,7 +156,7 @@ const $chartPlaceholder: ViewStyle = {
   backgroundColor: colors.palette.neutral200,
   justifyContent: 'center',
   alignItems: 'center',
-  borderRadius:30
+  borderRadius: 30
 }
 
 const $buttonsContainer: ViewStyle = {
@@ -165,27 +165,27 @@ const $buttonsContainer: ViewStyle = {
 }
 
 
-const $inputContainer:ViewStyle= {
+const $inputContainer: ViewStyle = {
   flexDirection: "row",
   alignItems: "center",
   paddingHorizontal: spacing.medium,
   marginBottom: spacing.medium,
-  justifyContent:'space-between',
-alignSelf:'center'
+  justifyContent: 'space-between',
+  alignSelf: 'center'
   // minWidth: "90%",
 }
 
-const $input:ViewStyle={
+const $input: ViewStyle = {
 
-    borderWidth: 1,
-    borderColor: colors.palette.primary100,
-    borderRadius: 8,
-    marginRight: 8,
-    minWidth: calculateRelativeWidth(200),
+  borderWidth: 1,
+  borderColor: colors.palette.primary100,
+  borderRadius: 8,
+  marginRight: 8,
+  minWidth: calculateRelativeWidth(200),
 
 }
 
 
-const $addButton:ViewStyle= {
-    minWidth: calculateRelativeWidth(120)
-  }
+const $addButton: ViewStyle = {
+  minWidth: calculateRelativeWidth(120)
+}

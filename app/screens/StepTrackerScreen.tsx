@@ -10,13 +10,14 @@ import { View } from "react-native"
 import { LineChart } from "react-native-gifted-charts"
 import axios from 'axios';
 
+
 interface StepRateData {
   id: string;
   step: number;
   timestamp: string;
 }
 
-interface StepTrackerScreenProps extends AppStackScreenProps<"StepTracker"> {}
+interface StepTrackerScreenProps extends AppStackScreenProps<"StepTracker"> { }
 
 export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function StepTrackerScreen() {
   const [currentStepRate, setCurrentStepRate] = useState<number>(0);
@@ -30,17 +31,21 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const fetchStepRateHistory = async () => {
     try {
-      const response = await axios.post("http://localhost:3001/api/user/activity/stepcounter/getSteps", {
-        UserID: "user123", // Replace with actual user ID
-        SDate: "2024-01-01", // Replace with actual start date
-        EDate: "2024-12-31"  // Replace with actual end date
-      });
+      const response = await axios.get("http://192.168.18.12:3000/api/user/activity/stepcounter/getsteps",
+        {
+          UserID: "user123", // Replace with actual user ID
+          SDate: "2024-01-01", // Replace with actual start date
+          EDate: "2024-12-31"  // Replace with actual end date
+        }
+      );
+      console.log(response, 'response of fetch')
       const data = response.data;
       setStepRateHistory(data);
       const totalSteps = data.reduce((total: number, entry: StepRateData) => total + entry.step, 0);
       setTotalStepsTaken(totalSteps);
     } catch (error) {
-      Alert.alert("Error", "Failed to fetch step rate history.");
+      console.log(error)
+      // Alert.alert("Error", error.mes);
     }
   };
 
@@ -53,7 +58,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         timestamp: new Date().toDateString(),
       };
       try {
-        const response = await axios.post("http://localhost:3001/api/user/activity/stepcounter/insertsteps", {
+        const response = await axios.post("http://192.168.18.12:3000/api/user/activity/stepcounter/insertsteps", {
           UserID: "user123", // Replace with actual user ID
           Steps: parsedStepRate,
           Date: new Date().toISOString(),
@@ -74,7 +79,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const deleteStepRate = async (id: string, stepRate: number) => {
     try {
-      const response = await axios.delete("http://localhost:3001/api/user/activity/stepcounter/deletesteps", {
+      const response = await axios.delete("http://192.168.18.12:3000/api/user/activity/stepcounter/deletesteps", {
         data: { UserID: "user123", StepID: id } // Replace with actual user ID and step ID
       });
       const data = response.data;

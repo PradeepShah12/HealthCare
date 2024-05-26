@@ -26,6 +26,7 @@ import { AuthService } from "app/services/api/Auth/auth.api"
 import { setError } from "app/store/Error/error.slice"
 import { ApiErrorResponse } from "apisauce"
 import { useMutation } from "@tanstack/react-query"
+import { setUser } from "app/store/User/user.slice"
 
 
 const validation = Yup.object().shape({
@@ -43,7 +44,7 @@ interface SignUpWithEmailScreenProps extends AuthStackScreenProps<"SignUp"> { }
 
 export const LoginScreen: FC<SignUpWithEmailScreenProps> = (props) => {
   // GoogleSignin.configure()
-const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch()
   const initialValues: InitialValues = {
     email: "",
     password: "",
@@ -69,15 +70,14 @@ const dispatch = useAppDispatch()
   //  login mutations
   const { mutate: login } = useMutation({
     mutationFn: (body: LoginDto) => AuthService.login(body),
-    onSuccess: (response:LoginResponse) => {
+    onSuccess: (response: LoginResponse) => {
       // perform other side effects on success - save tokens
-      console.log(response,'user login response')
-      dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
-
-      // dispatch(setUser({ user: response.data?.user }))
+      console.log(response, 'user login response')
+      dispatch(userLogin({ isAuthenticated: true, token: 'sampletoken' }))
+      dispatch(setUser({ user: response?.result }))
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
+      // dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
 
       dispatch(
         setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error?.message }),
@@ -86,14 +86,14 @@ const dispatch = useAppDispatch()
   })
   const onSubmit = (values: InitialValues) => {
     console.log({ username: values.email.toLowerCase(), password: values.password })
-const body:LoginDto = {
-  Email: values.email.toLowerCase(),
-  Password:  values.password
-}
+    const body: LoginDto = {
+      Email: values.email.toLowerCase(),
+      Password: values.password
+    }
     login(body)
 
 
-   
+
   }
 
 
@@ -138,7 +138,7 @@ const body:LoginDto = {
               >
                 <Spacer size="small" />
                 <LogoTextHeader />
-                <Text tx="auth.signIn.getStarted" preset="h1" style={[$signIn,$globalViewStyles.selfCenter]} />
+                <Text tx="auth.signIn.getStarted" preset="h1" style={[$signIn, $globalViewStyles.selfCenter]} />
                 <Spacer size="tiny" />
                 <Spacer size="medium" />
               </View>
@@ -179,9 +179,9 @@ const body:LoginDto = {
                 <Spacer size="medium" />
                 <Button
                   preset="filled"
-                tx={"common.login"}
+                  tx={"common.login"}
                   onPress={submitForm}
-                  // disabled={_isLoginLoading}
+                // disabled={_isLoginLoading}
                 />
                 {/* <Spacer size="medium" />
                 <View style={$divider}>
@@ -223,15 +223,15 @@ const body:LoginDto = {
               >
                 <View style={$haveAccountContainer}>
                   <Text preset="body2" tx="auth.signIn.noAccount" />
-                
-                <Spacer size="small" orientation="width"/>
-                    <Button tx="auth.signIn.signUpNow" preset="filled"  onPress={() => _navigation.push("SignUpWithEmail")}/>
-                    {/* <Text
+
+                  <Spacer size="small" orientation="width" />
+                  <Button tx="auth.signIn.signUpNow" preset="filled" onPress={() => _navigation.push("SignUpWithEmail")} />
+                  {/* <Text
                       tx="auth.signIn.signUpNow"
                       preset="body1bold"
                       style={{ color: colors.palette.secondary700 }}
                     /> */}
-   
+
                 </View>
               </View>
             </View>

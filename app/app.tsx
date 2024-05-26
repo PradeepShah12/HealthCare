@@ -82,7 +82,7 @@ const queryClientConfig = {
       // refetchInterval: 1000 * 30, //30 seconds
       refetchIntervalInBackground: false,
       suspense: false,
-      
+
     },
     mutations: {
       retry: 0,
@@ -137,31 +137,31 @@ function App(props: AppProps) {
   return (
 
     <Provider store={store}>
-          <StatusBar
+      <StatusBar
         animated={true}
         backgroundColor="red"
         barStyle={"dark-content"}
-        // showHideTransition={statusBarTransition}
-        // hidden={hidden}
+      // showHideTransition={statusBarTransition}
+      // hidden={hidden}
       />
-    <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={null} persistor={persistor}>
 
-      <QueryClientProvider client={queryClient} >
-    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <ErrorBoundary catchErrors={Config.catchErrors}>
-        <GestureHandlerRootView style={$container}>
-          <FitnessContext>
-          <AppNavigator
-            linking={linking}
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
-          />
-          </FitnessContext>
-        </GestureHandlerRootView>
-      </ErrorBoundary>
-    </SafeAreaProvider>
-    </QueryClientProvider>
-    </PersistGate>
+        <QueryClientProvider client={queryClient} >
+          <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+            <ErrorBoundary catchErrors={Config.catchErrors}>
+              <GestureHandlerRootView style={$container}>
+                <FitnessContext>
+                  <AppNavigator
+                    linking={linking}
+                    initialState={initialNavigationState}
+                    onStateChange={onNavigationStateChange}
+                  />
+                </FitnessContext>
+              </GestureHandlerRootView>
+            </ErrorBoundary>
+          </SafeAreaProvider>
+        </QueryClientProvider>
+      </PersistGate>
     </Provider>
   )
 }

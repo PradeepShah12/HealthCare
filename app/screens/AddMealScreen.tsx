@@ -20,7 +20,7 @@ interface Meal {
   name: string;
 }
 
-interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> {}
+interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
 const API_BASE = "http://localhost:3000";
 
@@ -65,18 +65,18 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
       const response = await axios.get(`${API_BASE}/user/activity/nutritionTracker/getCuisine`);
       setCuisines(response.data);
     } catch (error) {
-      Alert.alert("Error","Failed to fetch cuisines");
+      Alert.alert("Error", "Failed to fetch cuisines");
     }
   };
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.get(`http://localhost:3001/user/activity/nutritionTracker/getFood`, {
+      const response = await axios.get(`http://localhost:3000/user/activity/nutritionTracker/getFood`, {
         params: { CuisineID: cuisineId },
       });
       setFoods(response.data);
     } catch (error) {
-      Alert.alert("Error","Failed to fetch foods");
+      Alert.alert("Error", "Failed to fetch foods");
     }
   };
 
@@ -85,7 +85,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
       const response = await axios.get(`http://localhost:3000/user/activity/nutritionTracker/getMeals`);
       setMeals(response.data);
     } catch (error) {
-      Alert.alert("Error","Failed to fetch meals");
+      Alert.alert("Error", "Failed to fetch meals");
     }
   };
 
@@ -97,14 +97,14 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
       });
       alert("Meal added successfully!");
     } catch (error) {
-      Alert.alert("Error","Failed to add meals");
+      Alert.alert("Error", "Failed to add meals");
     }
   };
 
   return (
     <Screen safeAreaEdges={["top"]} style={styles.container}>
       <Text style={styles.title}>Add Meal</Text>
-      
+
       <Text style={styles.label}>Select Cuisine</Text>
       <FlatList
         data={cuisines}

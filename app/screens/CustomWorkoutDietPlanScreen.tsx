@@ -7,11 +7,11 @@ import { colors, spacing } from "app/theme";
 import { Alert } from "react-native";
 import { useAppSelector } from "app/store";
 
-interface CustomWorkoutDietPlanScreenProps extends AppStackScreenProps<"CustomWorkoutDietPlan"> {}
+interface CustomWorkoutDietPlanScreenProps extends AppStackScreenProps<"CustomWorkoutDietPlan"> { }
 
 export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> = observer(function CustomWorkoutDietPlanScreen() {
-  
-  const {id,weight,height} = useAppSelector(state=>state.user?.user)
+
+  const { id, weight, height } = useAppSelector(state => state.user?.user)
 
   const [dietType, setDietType] = useState<string>('');
   const [workoutPlan, setWorkoutPlan] = useState<string>('');
@@ -19,20 +19,20 @@ export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> =
 
   const fetchPlans = () => {
     // Call the API endpoint to fetch custom workout and diet plans
-    fetch(`http://localhost:3001/user/activity/customWorkoutplan/customplan?id=${id}&Weight=${weight}&Height=${height}&DietType=${dietType}`)
+    fetch(`http://localhost:3000/user/activity/customWorkoutplan/customplan?id=${id}&Weight=${weight}&Height=${height}&DietType=${dietType}`)
       .then(response => response.json())
       .then(data => {
         setWorkoutPlan(data.workoutPlan);
         setDietPlan(data.dietPlan);
       })
-      .catch(error =>Alert.alert("Error","Error fetching custom plans"));
+      .catch(error => Alert.alert("Error", "Error fetching custom plans"));
   };
 
   return (
     <Screen style={styles.container} preset="fixed">
       <Text style={styles.title}>Custom Workout & Diet Plan</Text>
       <Spacer size="medium" />
- 
+
       <TextField
         inputWrapperStyle={styles.input}
         label="Enter Diet Type"

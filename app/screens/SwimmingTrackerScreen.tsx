@@ -12,7 +12,7 @@ import { PieChart } from "react-native-gifted-charts";
 import { Alert } from "react-native";
 // import { useStores } from "app/models"
 
-interface SwimmingTrackerScreenProps extends AppStackScreenProps<"SwimmingTracker"> {}
+interface SwimmingTrackerScreenProps extends AppStackScreenProps<"SwimmingTracker"> { }
 interface SwimmingData {
   id: string;
   duration: number; // in minutes
@@ -22,8 +22,8 @@ interface SwimmingData {
 export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(function SwimmingTrackerScreen() {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
-  const [swimmingHistory, setSwimmingHistory] = useState<SwimmingData[]>([ 
-    { id: 'sunday', duration: 40, timestamp: new Date().toDateString() }, 
+  const [swimmingHistory, setSwimmingHistory] = useState<SwimmingData[]>([
+    { id: 'sunday', duration: 40, timestamp: new Date().toDateString() },
     { id: 'monday', duration: 20, timestamp: new Date().toDateString() }]);
 
   const [currentSwimmingDuration, setCurrentSwimmingDuration] = useState<number>(0);
@@ -35,7 +35,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 
   const fetchSwimmingHistory = async () => {
     try {
-      const response = await axios.post("http://localhost:3001/user/activity/swimming/getswimming", {
+      const response = await axios.post("http://localhost:3000/user/activity/swimming/getswimming", {
         UserID: "user123", // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
@@ -57,7 +57,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
     };
 
     try {
-      const response = await axios.post("http://localhost:3001/user/activity/swimming/insertswimming", {
+      const response = await axios.post("http://localhost:3000/user/activity/swimming/insertswimming", {
         UserID: "user123", // Replace with actual user ID
         Duration: newSwimmingDuration,
       });
@@ -85,7 +85,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
         <View style={$stats}>
           <View style={$stat}>
             <Text preset="h2bold" style={$statLabel}>Current Swimming Duration</Text>
-            <Text preset="h1" style={$statValue}>{swimmingHistory[swimmingHistory.length-1].duration} mins</Text>
+            <Text preset="h1" style={$statValue}>{swimmingHistory[swimmingHistory.length - 1].duration} mins</Text>
           </View>
         </View>
         <View style={$inputContainer}>
@@ -104,7 +104,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
             <PieChart data={chartData} />
           </View>
         </View>
-        <LottieView source={require("../../assets/swimming.json")}  style={{height:calculateRelativeHeight(200)}}  autoPlay loop />
+        <LottieView source={require("../../assets/swimming.json")} style={{ height: calculateRelativeHeight(200) }} autoPlay loop />
 
       </ScrollView>
     </Screen>
@@ -191,5 +191,5 @@ const $input: ViewStyle = {
 
 const $addButton: ViewStyle = {
   maxWidth: calculateRelativeWidth(150),
-  alignSelf:'center'
+  alignSelf: 'center'
 }

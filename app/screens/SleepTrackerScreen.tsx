@@ -15,7 +15,7 @@ interface SleepData {
   timestamp: string;
 }
 
-interface SleepTrackerScreenProps extends LoggedInScreenProps<"SleepTracker"> {}
+interface SleepTrackerScreenProps extends LoggedInScreenProps<"SleepTracker"> { }
 
 export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function SleepTrackerScreen() {
   const [currentSleepDuration, setCurrentSleepDuration] = useState<number>(0);
@@ -28,7 +28,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 
   const fetchSleepHistory = async () => {
     try {
-      const response = await axios.post("http://localhost:3001/api/user/activity/sleep/getSleepRecords", {
+      const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/getSleepRecords", {
         UserID: "user123", // Replace with actual user ID
         SDate: "2024-01-01", // Replace with actual start date
         EDate: "2024-12-31"  // Replace with actual end date
@@ -49,7 +49,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
       timestamp: new Date().toDateString(),
     };
     try {
-      const response = await axios.post("http://localhost:3001/api/user/activity/sleep/insertSleepRecord", {
+      const response = await axios.post("http://192.168.18.12:3000/api/user/activity/sleep/insertSleepRecord", {
         UserID: "user123", // Replace with actual user ID
         SleepDuration: newSleepDuration,
         Date: new Date().toISOString(),
@@ -69,7 +69,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 
   const deleteSleepRecord = async (id: string) => {
     try {
-      const response = await axios.delete("http://localhost:3001/api/user/activity/sleep/deleteSleepRecord", {
+      const response = await axios.delete("http://192.168.18.12:3000/api/user/activity/sleep/deleteSleepRecord", {
         data: { UserID: "user123", SleepID: id } // Replace with actual user ID and sleep record ID
       });
       const data = response.data;
