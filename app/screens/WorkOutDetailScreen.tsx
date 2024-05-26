@@ -19,7 +19,6 @@ export const WorkOutDetailScreen: FC<WorkOutDetailScreenProps> = observer(functi
   const route = useRoute();
   const navigation = useNavigation();
   const { completed, setCompleted } = useContext(FitnessItems);
-
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
@@ -66,7 +65,7 @@ export const WorkOutDetailScreen: FC<WorkOutDetailScreenProps> = observer(functi
       </ScrollView>
 
       <TouchableOpacity onPress={() => {
-        navigation.navigate("Fit", { exercises: route.params.exercises }) 
+        navigation.navigate("Fit", { exercises: route.params.exercises,workoutType:route.params.workoutType }) 
         setCompleted([]);
       }} style={{ backgroundColor: colors.palette.secondary700, padding: 12, marginHorizontal: 15, marginVertical: 20, borderRadius: 50}}>
         <Text style={{ textAlign: "center", color: "#fff", fontWeight: "bold", fontSize: 20 }}>

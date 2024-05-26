@@ -36,14 +36,23 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
   }, []);
 
   const fetchSwimmingHistory = async () => {
+    const Stime= new Date("2024-05-01")
+const Etime= new Date("2024-05-31")
+
     try {
-      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/user/activity/swimming/getswimming", {
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/swimming/getswimming", {
         UserID: UserID, // Replace with actual user ID
-        SDate: "2024-01-01", // Replace with actual start date
-        EDate: "2024-12-31"  // Replace with actual end date
+        SDate:Stime.toISOString(),
+        EDate:Etime.toISOString()// Replace with actual end date
       });
       const data = response.data;
-      setSwimmingHistory(data);
+      const output = data.map((item, index) => ({
+        id: (index + 1).toString(),
+        duration: item.Duration / 60,  // converting seconds to minutes
+        timestamp: item.Timestamp
+      }));
+      
+      setSwimmingHistory(output);
       const totalDuration = data.reduce((total: number, entry: SwimmingData) => total + entry.duration, 0);
       setCurrentSwimmingDuration(totalDuration);
     } catch (error) {
@@ -57,10 +66,10 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
       duration: newSwimmingDuration,
       timestamp: new Date().toISOString(),
     };
-
+console.log(UserID,'user id')
     try {
-      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/user/activity/swimming/insertswimming", {
-        UserID: UserID, // Replace with actual user ID
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/swimming/insertswimming", {
+        UserID:UserID, // Replace with actual user ID
         Duration: newSwimmingDuration,
       });
       const data = response.data;
@@ -76,7 +85,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
     }
   };
 
-  const chartData = swimmingHistory.map(entry => ({ value: entry.duration }));
+  const chartData = swimmingHistory?.map(entry => ({ value: entry.duration }));
 
   return (
     <Screen style={$root} preset="fixed">
@@ -87,7 +96,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
         <View style={$stats}>
           <View style={$stat}>
             <Text preset="h2bold" style={$statLabel}>Current Swimming Duration</Text>
-            <Text preset="h1" style={$statValue}>{swimmingHistory[swimmingHistory.length - 1].duration} mins</Text>
+            <Text preset="h1" style={$statValue}>{swimmingHistory[swimmingHistory?.length - 1]?.duration} mins</Text>
           </View>
         </View>
         <View style={$inputContainer}>
@@ -95,7 +104,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
             inputWrapperStyle={$input}
             placeholder="Enter Swimming Duration (mins)"
             keyboardType="numeric"
-            value={newSwimmingDuration.toString()}
+            // value={newSwimmingDuration.toString()}
             onChangeText={text => setNewSwimmingDuration(parseInt(text))}
           />
         </View>

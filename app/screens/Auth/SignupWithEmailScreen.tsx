@@ -23,17 +23,19 @@ import { useMutation } from "@tanstack/react-query";
 import { setError, setSuccess } from "../../store/Error/error.slice";
 import { ImageStyle } from "react-native-fast-image";
 import { ApiErrorResponse } from "apisauce";
+import { Selector } from "app/components/Selector";
 
 interface JoinWithEmail {
-  firstName: string,
-  lastName:string,
-  email: string,
-  username: string,
-  password: string
-  height:string,
-  weight:string,
-  country:string,
-  dateOfBirth:string
+  FirstName: string,
+  LastName:string,
+  Email: string,
+  Username: string,
+  Password: string
+  Height:string,
+  Weight:string,
+  Country:string,
+  DateOfBirth:string
+  DietType:string
 
 
 }
@@ -41,31 +43,32 @@ interface JoinWithEmail {
 interface SignUpWithEmailScreenProps extends AuthStackScreenProps<"SignUpWithEmail"> { }
 
 const validation = Yup.object().shape({
-  firstName: Yup.string().required("First Name is required"),
-  lastName:Yup.string().required("Last Name is required"),
-  country:Yup.string().required("Country is required"),
-  dateOfBirth:Yup.string().required("Country is required"),
-  height:Yup.string().required("Height is required"),
-  weight:Yup.string().required("Weight is required"),
-  email: Yup.string().required("Email is required").email("Enter valid email"),
-  username: Yup.string().required("Username is required"),
-  password: Yup.string().required("Phone number is required"),
+  FirstName: Yup.string().required("First Name is required"),
+  LastName:Yup.string().required("Last Name is required"),
+  Country:Yup.string().required("Country is required"),
+  DateOfBirth:Yup.string().required("Country is required"),
+  Height:Yup.string().required("Height is required"),
+  Weight:Yup.string().required("Weight is required"),
+  Email: Yup.string().required("Email is required").email("Enter valid email"),
+  Username: Yup.string().required("Username is required"),
+  Password: Yup.string().required("Phone number is required"),
 })
 
 export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => {
   const modalizeRef = useRef<Modalize>(null);
   const [otp, setOtp] = useState<string>('1')
+  const [diet,setDiet]= useState('')
   const _navigation = props.navigation
   const formInitialValues: JoinWithEmail = {
-    firstName: "",
-    lastName:"",
-    email: "",
-    username: "",
-    password: "",
-    height:"",
-    weight:"",
-    country:"",
-    dateOfBirth:""
+    FirstName: "",
+    LastName:"",
+    Email: "",
+    Username: "",
+    Password: "",
+    Height:"",
+    Weight:"",
+    Country:"",
+    DateOfBirth:""
 
   }
 
@@ -77,7 +80,8 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
       if (response?.message) {
         dispatch(setSuccess({
           errorMessage: response?.message,
-          isSnackBarVisible: true
+          isSnackBarVisible: true,
+          type:'success'
         }))
       } else {
         dispatch(setError({
@@ -97,7 +101,7 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
   })
 
   const onSubmit = (values: JoinWithEmail) => {
-    register(values)
+    register({...values,DietType:diet})
   }
 
   return (
@@ -128,87 +132,94 @@ export const SignupWithEmailScreen: FC<SignUpWithEmailScreenProps> = (props) => 
             <View >
               <TextField
                 labelTx="common.firstName"
-                value={values.firstName}
+                value={values.FirstName}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("firstName")}
-                status={errors.firstName ? "error" : null}
-                helper={errors.firstName}
-                onBlur={handleBlur("firstName")}
+                onChangeText={handleChange("FirstName")}
+                status={errors.FirstName ? "error" : null}
+                helper={errors.FirstName}
+                onBlur={handleBlur("FirstName")}
               />
                    <TextField
                 labelTx="common.lastName"
-                value={values.lastName}
+                value={values.LastName}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("lastName")}
-                status={errors.lastName ? "error" : null}
-                helper={errors.lastName}
-                onBlur={handleBlur("lastName")}
+                onChangeText={handleChange("LastName")}
+                status={errors.LastName ? "error" : null}
+                helper={errors.LastName}
+                onBlur={handleBlur("LastName")}
               />
               <TextField
                 labelTx="common.email"
-                value={values.email}
+                value={values.Email}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("email")}
-                status={errors.email ? "error" : null}
-                helper={errors.email}
-                onBlur={handleBlur("email")}
+                onChangeText={handleChange("Email")}
+                status={errors.Email ? "error" : null}
+                helper={errors.Email}
+                onBlur={handleBlur("Email")}
                 keyboardType="email-address"
               />
            <TextField
                 labelTx="common.username"
-                value={values.username}
+                value={values.Username}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("username")}
-                status={errors.username ? "error" : null}
-                helper={errors.username}
-                onBlur={handleBlur("username")}
+                onChangeText={handleChange("Username")}
+                status={errors.Username ? "error" : null}
+                helper={errors.Username}
+                onBlur={handleBlur("Username")}
               /> 
               <TextField
                 labelTx="common.password"
-                value={values.password}
+                value={values.Password}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("password")}
-                status={errors.password ? "error" : null}
-                helper={errors.password}
-                onBlur={handleBlur("password")}
-                keyboardType="phone-pad"
+                onChangeText={handleChange("Password")}
+                status={errors.Password ? "error" : null}
+                helper={errors.Password}
+                onBlur={handleBlur("Password")}
+                // keyboardType="phone-pad"
               /> 
                <TextField
                 labelTx="common.height"
-                value={values.height}
+                value={values.Height}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("height")}
-                status={errors.height ? "error" : null}
-                helper={errors.height}
-                onBlur={handleBlur("height")}
+                onChangeText={handleChange("Height")}
+                status={errors.Height ? "error" : null}
+                helper={errors.Height}
+                onBlur={handleBlur("Height")}
               /> 
                 <TextField
                 labelTx="common.weight"
-                value={values.weight}
+                value={values.Weight}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("weight")}
-                status={errors.weight ? "error" : null}
-                helper={errors.weight}
-                onBlur={handleBlur("weight")}
+                onChangeText={handleChange("Weight")}
+                status={errors.Weight ? "error" : null}
+                helper={errors.Weight}
+                onBlur={handleBlur("Weight")}
               /> 
                   <TextField
                 labelTx="common.country"
-                value={values.country}
+                value={values.Country}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("country")}
-                status={errors.country ? "error" : null}
-                helper={errors.country}
-                onBlur={handleBlur("country")}
+                onChangeText={handleChange("Country")}
+                status={errors.Country ? "error" : null}
+                helper={errors.Country}
+                onBlur={handleBlur("Country")}
               /> 
                        <TextField
                 labelTx="common.dateOfBirth"
-                value={values.dateOfBirth}
+                value={values.DateOfBirth}
+                placeholder="YYYY/MM/DD"
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("dateOfBirth")}
-                status={errors.dateOfBirth ? "error" : null}
-                helper={errors.dateOfBirth}
-                onBlur={handleBlur("dateOfBirth")}
+                onChangeText={handleChange("DateOfBirth")}
+                status={errors.DateOfBirth ? "error" : null}
+                helper={errors.DateOfBirth}
+                onBlur={handleBlur("DateOfBirth")}
               /> 
+               <Selector 
+               onSelect={setDiet}
+               value={diet} 
+               active={true}
+               containerStyle={$textInputStyle}
+               items={[{label:"Veg",value:"Veg"},{label:"Non Veg",value:"Non Veg"},{label:"Vegan",value:"Vegan"}]}/>
               <Button
                 preset="filled"
                 tx={initationPending ? "common.loading" : "auth.signup.createAccount"}

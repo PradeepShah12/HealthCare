@@ -4,6 +4,8 @@ import { Alert, FlatList, ViewStyle } from "react-native";
 import { AppStackScreenProps } from "app/navigators";
 import { Button, Screen, Text, TextField } from "app/components";
 import { StyleSheet } from "react-native";
+import axios from 'axios'
+
 import { colors, spacing } from "app/theme";
 import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calculateRelativeDimensions";
 import { View } from "react-native";
@@ -25,14 +27,38 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
   const [currentHeartRate, setCurrentHeartRate] = useState<number>(0);
   const [heartRateHistory, setHeartRateHistory] = useState<HeartRateData[]>([]);
   const [newHeartRate, setNewHeartRate] = useState<string>("");
+const Stime= new Date("2024-05-01")
+const Etime= new Date("2024-05-31")
 
+console.log(Stime.toISOString(),'time')
   useEffect(() => {
     // Fetch heart rate data using the appropriate API endpoint
-    fetch(`http://localhost:3003/user/activity/nutritionTracker/getHeartRate?UserID=${user.UserID}&SDate=2024-05-01&EDate=2024-05-31`)
-      .then(response => response.json())
-      .then(data => setHeartRateHistory(data))
-      .catch(error => Alert.alert("Error", "Error fetching heart rate data:", error));
+  heartRate()
   }, [user.UserID]);
+
+
+const  heartRate=async()=>{
+  axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/getheartbeat`,{
+      UserID:user.UserID,
+      SDate:Stime.toISOString(),
+      EDate:Etime.toISOString()
+    })
+      .then(data =>{
+        console.log(data.data,'response')
+        
+        if(data.data.length>0){
+          
+          const output = data.data.map((item, index) => ({
+            id: (index + 1).toString(),
+            heartRate: item.Heartrate,
+            timestamp: item.DATE
+          }));
+          
+          setHeartRateHistory(output)}})
+      .catch(error => Alert.alert("Error", "Error fetching heart rate data:", error));
+}
+
+
 
   const addHeartRate = () => {
     const parsedHeartRate = parseInt(newHeartRate, 10);
@@ -47,7 +73,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('https://60de-115-64-55-67.ngrok-free.app/user/activity/heartbeat/insertheartbeat', {
+      fetch('https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +103,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
     setCurrentHeartRate(prevState => prevState === deletedHeartRate ? 0 : prevState);
   };
 
-  const chartData = heartRateHistory.map(entry => ({ value: entry.heartRate }));
+  const chartData = heartRateHistory?.map(entry => ({ value: entry?.heartRate }));
   const formattedHistory: { [key: string]: HeartRateData[] } = heartRateHistory.reduce((acc, entry) => {
     const timestamp = new Date(entry.timestamp);
     const month = timestamp.toLocaleString('default', { month: 'long' });
@@ -94,7 +120,7 @@ export const HeartRateMonitorScreen: FC<HeartRateMonitorScreenProps> = observer(
     <Screen style={styles.root} preset="fixed" safeAreaEdges={["top"]}>
       <View style={styles.container}>
         <Text style={styles.title}>Heart Rate Monitor</Text>
-        <Text style={styles.currentHeartRate}>Current Heart Rate: {currentHeartRate}</Text>
+        {/* <Text style={styles.currentHeartRate}>Current Heart Rate: {currentHeartRate}</Text> */}
 
         <LineChart
           stripColor={'red'} // extract colors from chartData

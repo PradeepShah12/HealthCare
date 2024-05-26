@@ -28,15 +28,28 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
   }, []);
 
   const fetchSleepHistory = async () => {
+    const Stime= new Date("2024-05-01")
+const Etime= new Date("2024-05-31")
+
     try {
-      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/getSleepRecords", {
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/getsleep", {
         UserID: UserID, // Replace with actual user ID
-        SDate: "2024-01-01", // Replace with actual start date
-        EDate: "2024-12-31"  // Replace with actual end date
+        SDate:Stime.toISOString(),
+      EDate:Etime.toISOString()
       });
-      const data = response.data;
-      setSleepHistory(data);
-      const totalSleep = data.reduce((total: number, entry: SleepData) => total + entry.sleepDuration, 0);
+      const data = response;
+      console.log(data,'sleep recourd output')
+
+      const output = data?.data?.map((item, index) => ({
+        id: (index + 1).toString(),
+        sleepDuration: item.Duration === null ? 0 : item.Duration,  // handling null Duration
+        timestamp: item.DateOFSleep
+      }));
+   
+        setSleepHistory(output);
+
+      
+      const totalSleep = output?.reduce((total: number, entry: SleepData) => total + entry.sleepDuration, 0);
       setCurrentSleepDuration(totalSleep);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch sleep records.");
@@ -49,14 +62,17 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
       sleepDuration: newSleepDuration,
       timestamp: new Date().toDateString(),
     };
+
+
+    const now= new Date()
     try {
-      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/insertSleepRecord", {
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/insertsleep", {
         UserID: UserID, // Replace with actual user ID
         SleepDuration: newSleepDuration,
-        Date: new Date().toISOString(),
+        // Date: now.toISOString(),
       });
       const data = response.data;
-      if (data.success) {
+      if (data?.status==true) {
         setSleepHistory(prevState => [...prevState, newEntry]);
         setCurrentSleepDuration(prevState => prevState + newSleepDuration);
         setNewSleepDuration(0);
@@ -70,7 +86,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 
   const deleteSleepRecord = async (id: string) => {
     try {
-      const response = await axios.delete("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/sleep/deleteSleepRecord", {
+      const response = await axios.delete("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/deleteSleepRecord", {
         data: { UserID: UserID, SleepID: id } // Replace with actual user ID and sleep record ID
       });
       const data = response.data;
@@ -101,7 +117,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
           inputWrapperStyle={styles.input}
           placeholder="Enter sleep duration (hours)"
           keyboardType="numeric"
-          value={newSleepDuration.toString()}
+          // value={newSleepDuration.toString()}
           onChangeText={text => setNewSleepDuration(parseInt(text))}
         />
         <Button text="Add Sleep Record" onPress={addSleepRecord} style={styles.addButton} />

@@ -28,13 +28,14 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
 
   const fetchIntake = async () => {
     try {
-      const response = await axios.get("https://60de-115-64-55-67.ngrok-free.app/api/user/nutrition/getIntake", {
-        params: {
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeals", {
+      
           UserID: UserID, // Replace with actual user ID
-        },
+        
       });
       const data = response.data;
-      setMeals(data);
+      console.log(data,'data in respnse')
+     if(data?.length>0){ setMeals(data);}
     } catch (error) {
       Alert.alert("Alert", "Failed to fetch intake data");
     } finally {

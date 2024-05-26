@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import LottieView from 'lottie-react-native';
 import { ScrollView, View, ViewStyle } from "react-native";
@@ -8,6 +8,8 @@ import { calculateRelativeHeight, calculateRelativeWidth } from "app/utils/calcu
 import { colors, spacing } from "app/theme";
 import { PieChart } from "react-native-gifted-charts";
 import { Alert } from "react-native";
+import { useAppSelector } from "app/store";
+import axios from 'axios'
 
 interface OxygenMonitorScreenProps extends AppStackScreenProps<"OxygenMonitor"> { }
 
@@ -23,6 +25,45 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
     { id: 'monday', percent: 20, timestamp: new Date().toDateString() }
   ]);
   const [newOxygenPercent, setNewOxygenPercent] = useState<number>(0);
+  const { UserID } = useAppSelector(state => state.user.user)
+
+
+
+  const  heartRate=async()=>{
+    const Stime= new Date("2024-05-01")
+const Etime= new Date("2024-05-31")
+
+    axios.post('https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/oxygen/getoxygen',{
+        UserID:UserID,
+        SDate:Stime.toISOString(),
+        EDate:Etime.toISOString()
+      })
+        .then(data =>{
+          console.log(data.data,'response')
+          
+          if(data.data.length>0){
+            
+            const output = data.data.map((item, index) => ({
+              id: (index + 1).toString(),
+              percent: item.Oxygen,
+              timestamp: item.Timestamp
+            }));
+            
+            setOxygenHistory(output)}})
+        .catch(error => Alert.alert("Error", "Error fetching heart rate data:", error));
+  }
+
+
+
+  useEffect(() => {
+    // Fetch heart rate data using the appropriate API endpoint
+  heartRate()
+  }, [UserID]);
+
+
+
+
+
 
   const addOxygenHistory = () => {
     const newEntry: OxygenData = {
@@ -34,14 +75,14 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
     setNewOxygenPercent(0);
 
     // Call API endpoint to insert oxygen data
-    fetch('https://60de-115-64-55-67.ngrok-free.app/user/activity/oxygen/insertheartbeat', {
+    fetch('https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/oxygen/insertoxygen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        Percent: newOxygenPercent,
-        Timestamp: new Date().toISOString(),
+        Oxygen: newOxygenPercent,
+        UserID:UserID
       }),
     })
       .then(response => {
@@ -80,7 +121,7 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
             inputWrapperStyle={$input}
             placeholder="Enter Oxygen Percent"
             keyboardType="numeric"
-            value={newOxygenPercent.toString()}
+            // value={newOxygenPercent.toString()}
             onChangeText={text => setNewOxygenPercent(parseInt(text))}
           />
           <Button text="Add Oxygen Record" onPress={addOxygenHistory} style={$addButton} />
@@ -171,7 +212,7 @@ const $inputContainer: ViewStyle = {
   paddingHorizontal: spacing.medium,
   marginBottom: spacing.medium,
   justifyContent: 'space-between',
-  alignSelf: 'center'
+  alignSelf: 'center',
   // minWidth: "90%",
 }
 
@@ -181,7 +222,7 @@ const $input: ViewStyle = {
   borderColor: colors.palette.primary100,
   borderRadius: 8,
   marginRight: 8,
-  minWidth: calculateRelativeWidth(200),
+  minWidth: calculateRelativeWidth(100),
 
 }
 

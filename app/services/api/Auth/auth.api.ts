@@ -17,7 +17,7 @@ import {
 
 class Auth {
   async register(body: RegisterDto) {
-    const response = await api.post<LoginResponse>("/user/singup/userregistration", body)
+    const response = await api.post<LoginResponse>("/user/signup/userregistration", body)
 
     return response.data
   }

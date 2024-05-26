@@ -1,6 +1,8 @@
 import React, { FC, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { ViewStyle } from "react-native";
+import axios from 'axios'
+
 import { AppStackScreenProps } from "app/navigators";
 import { Button, Screen, Spacer, Text, TextField } from "app/components";
 import { colors, spacing } from "app/theme";
@@ -11,7 +13,7 @@ interface CustomWorkoutDietPlanScreenProps extends AppStackScreenProps<"CustomWo
 
 export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> = observer(function CustomWorkoutDietPlanScreen() {
 
-  const { id, weight, height } = useAppSelector(state => state.user?.user)
+  const { UserID, Weight, Height } = useAppSelector(state => state.user?.user)
 
   const [dietType, setDietType] = useState<string>('');
   const [workoutPlan, setWorkoutPlan] = useState<string>('');
@@ -19,11 +21,15 @@ export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> =
 
   const fetchPlans = () => {
     // Call the API endpoint to fetch custom workout and diet plans
-    fetch(`https://60de-115-64-55-67.ngrok-free.app/user/activity/customWorkoutplan/customplan?id=${id}&Weight=${weight}&Height=${height}&DietType=${dietType}`)
-      .then(response => response.json())
+    axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/customWorkoutplan/customplan`,{
+      UserID:UserID,
+      Weight:Weight,
+      Height:Height,
+      DietType:dietType
+    })
       .then(data => {
-        setWorkoutPlan(data.workoutPlan);
-        setDietPlan(data.dietPlan);
+        setWorkoutPlan(data.data.workoutPlan);
+        setDietPlan(data.data.dietPlan);
       })
       .catch(error => Alert.alert("Error", "Error fetching custom plans"));
   };

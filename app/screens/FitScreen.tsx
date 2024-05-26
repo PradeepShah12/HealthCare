@@ -1,15 +1,18 @@
 import React, { FC, useContext, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, TouchableOpacity, View, ViewStyle } from "react-native"
+import { Alert, Image, TouchableOpacity, View, ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen, Text } from "app/components"
 import { useNavigation, useRoute } from "@react-navigation/native"
+import axios from 'axios'
+
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 import { FitnessItems } from '../Context';
 import { DynamicIcon } from "app/components/DynamicIcon"
 import { colors } from "app/theme"
 import { $globalTextStyles } from "app/theme/styles"
+import { useAppSelector } from "app/store"
 
 interface FitScreenProps extends AppStackScreenProps<"Fit"> {}
 
@@ -19,6 +22,8 @@ export const FitScreen: FC<FitScreenProps> = observer(function FitScreen() {
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
+  const { UserID } = useAppSelector(state => state.user.user)
+
   const route = useRoute();
   const navigation = useNavigation();
   const [index, setIndex] = useState(0);
@@ -26,6 +31,24 @@ export const FitScreen: FC<FitScreenProps> = observer(function FitScreen() {
   const current = exercise[index];
   const { completed, setCompleted, calories, setCalories, minutes, setMinutes, workout, setWorkout, } = useContext(FitnessItems);
 
+
+  console.log(route.params.workoutType,'exercise')
+  const insertWorkout = async () => {
+    try {
+      await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/workout/insertWorkout`, {
+        UserID: UserID,
+        WorkoutType:route.params.workoutType,
+        duration:120,
+         // replace with actual user ID
+      });
+      alert("Workout added successfully!");
+    } catch (error) {
+      Alert.alert("Error", "Failed to add meals");
+    }
+  };
+
+
+  
   return (
     <Screen>
       <Image style={{width: "100%", height: 400}} source={{uri: current?.image}} />
@@ -39,6 +62,7 @@ export const FitScreen: FC<FitScreenProps> = observer(function FitScreen() {
         index + 1 >= exercise.length ? (
           <TouchableOpacity onPress={() => {
             navigation.navigate("WorkOut");
+            insertWorkout()
             setCompleted([...completed, current?.name]);
             setWorkout(workout + 1);
             setMinutes(minutes + 2.5);

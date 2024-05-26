@@ -222,6 +222,7 @@ const isMonito=route?.params?.monitor||false
               image: item.image,
               exercises: item.exercises,
               id: item.id,
+              workoutType:item.name,
             })
           }
           onLongPress={() =>!isMonito&&

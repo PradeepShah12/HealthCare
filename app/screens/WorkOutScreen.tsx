@@ -1,3 +1,4 @@
+import React from 'react'
 import { Text, View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import {  useContext, useState } from 'react';
 import { DynamicIcon } from 'app/components/DynamicIcon';

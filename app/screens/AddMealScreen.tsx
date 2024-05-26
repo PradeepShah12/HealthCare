@@ -23,7 +23,7 @@ interface Meal {
 
 interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
-const API_BASE = "https://60de-115-64-55-67.ngrok-free.app";
+const API_BASE = "https://55e4-115-64-55-67.ngrok-free.app/api/";
 
 export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealScreen() {
   const [cuisines, setCuisines] = useState<Cuisine[]>([
@@ -51,7 +51,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   useEffect(() => {
     if (selectedCuisine) {
-      fetchFoods(selectedCuisine.id);
+      fetchFoods(selectedCuisine.CuisineId);
     }
   }, [selectedCuisine]);
 
@@ -63,7 +63,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchCuisines = async () => {
     try {
-      const response = await axios.get(`${API_BASE}/user/activity/nutritionTracker/getCuisine`);
+      const response = await axios.post(`${API_BASE}user/activity/nutritionTracker/getCuisine`);
       setCuisines(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch cuisines");
@@ -72,8 +72,9 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.get(`https://60de-115-64-55-67.ngrok-free.app/user/activity/nutritionTracker/getFood`, {
-        params: { CuisineID: cuisineId },
+      const response = await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getFood`, {
+      CuisineID: cuisineId ,
+      UserID,
       });
       setFoods(response.data);
     } catch (error) {
@@ -83,7 +84,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchMeals = async () => {
     try {
-      const response = await axios.get(`https://60de-115-64-55-67.ngrok-free.app/user/activity/nutritionTracker/getMeals`);
+      const response = await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeal`,{UserID});
       setMeals(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch meals");
@@ -92,7 +93,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const addMeal = async () => {
     try {
-      await axios.post(`http://localhost:3004/user/activity/nutritionTracker/InsertIntaker`, {
+      await axios.post(`http://localhost:3004/api/user/activity/nutritionTracker/InsertIntaker`, {
         UserID: UserID, // replace with actual user ID
         MealID: selectedMeal?.id,
       });
@@ -112,7 +113,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => setSelectedCuisine(item)} style={styles.item}>
-            <Text style={styles.itemText}>{item.name}</Text>
+            <Text style={styles.itemText}>{item.CuisineName}</Text>
           </TouchableOpacity>
         )}
       />

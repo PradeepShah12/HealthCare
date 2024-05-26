@@ -33,7 +33,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const fetchStepRateHistory = async () => {
     try {
-      const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/getsteps",
+      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/getsteps",
         {
 
 
@@ -47,9 +47,15 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
       );
       console.log(response.data, 'response of fetch')
       const data = response.data;
-      setStepRateHistory(data);
+      const output = data.map((item, index) => ({
+        id: (index + 1).toString(),
+        step: item.Steps,
+        timestamp: item.Date
+      }));
+      
+      setStepRateHistory(output);
       const totalSteps = data.reduce((total: number, entry: StepRateData) => total + entry.step, 0);
-      setTotalStepsTaken(totalSteps);
+      // setTotalStepsTaken(totalSteps);
     } catch (error) {
       console.log(error)
       // Alert.alert("Error", error.mes);
@@ -65,14 +71,14 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         timestamp: new Date().toDateString(),
       };
       try {
-        const response = await axios.post("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/insertsteps", {
+        const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/insertsteps", {
           UserID: UserID, // Replace with actual user ID
           Steps: parsedStepRate,
-          Date: new Date().toISOString(),
+          Date: new Date(),
 
         });
         const data = response.data;
-        if (data.success) {
+        if (data?.status===true) {
           setStepRateHistory(prevState => [...prevState, newEntry]);
           setTotalStepsTaken(prevState => prevState + parsedStepRate);
           setNewStepRate("");
@@ -80,14 +86,14 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
           Alert.alert("Error", "Failed to add step rate.");
         }
       } catch (error) {
-        Alert.alert("Error", "Failed to add step rate.");
+        // Alert.alert("Error", "Failed to add step rate.");
       }
     }
   };
 
   const deleteStepRate = async (id: string, stepRate: number) => {
     try {
-      const response = await axios.delete("https://60de-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/deletesteps", {
+      const response = await axios.delete("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/deletesteps", {
         data: { UserID: UserID, StepID: id } // Replace with actual user ID and step ID
       });
       const data = response.data;
@@ -119,8 +125,8 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
     <Screen style={styles.root} preset="scroll" safeAreaEdges={["top"]}>
       <View style={styles.container}>
         <Text style={styles.title}>Steps Monitor</Text>
-        <Text style={styles.currentStepRate}>Current Steps: {currentStepRate}</Text>
-        <Text style={styles.currentStepRate}>Total Steps: {totalStepsTaken}</Text>
+        {/* <Text style={styles.currentStepRate}>Current Steps: {currentStepRate}</Text> */}
+        {/* <Text style={styles.currentStepRate}>Total Steps: {totalStepsTaken}</Text> */}
         <LineChart
           yAxisColor={colors.palette.neutral100}
           yAxisTextStyle={{ color: colors.palette.neutral100 }}
@@ -144,16 +150,16 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         <Button text="Add Steps" onPress={addStepRate} style={styles.addButton} />
       </View>
       {Object.entries(formattedHistory).map(([date, entries]) => (
-        <View key={entries[0]}>
+        <View key={date}>
           <View style={{ flexGrow: 1 }}>
             <FlatList
               data={entries}
               keyExtractor={item => item.id}
               renderItem={({ item }) => {
-                const Format = new Date(item.Date)
+                const Format = new Date(item.timestamp)
                 return (
                   <View style={styles.historyItem}>
-                    <Text>{Format.toLocaleString()}: {item.Steps}</Text>
+                    <Text>{Format.toLocaleString()}: {item.step}</Text>
                     <Button text="Delete" onPress={() => deleteStepRate(item.id, item.step)} style={styles.deleteButton} />
                   </View>
                 )

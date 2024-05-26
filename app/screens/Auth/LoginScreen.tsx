@@ -74,7 +74,7 @@ export const LoginScreen: FC<SignUpWithEmailScreenProps> = (props) => {
       // perform other side effects on success - save tokens
       console.log(response, 'user login response')
       dispatch(userLogin({ isAuthenticated: true, token: 'sampletoken' }))
-      dispatch(setUser({ user: response?.result }))
+      dispatch(setUser({ user: response?.result[0][0] }))
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
       // dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
