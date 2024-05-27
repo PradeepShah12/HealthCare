@@ -32,7 +32,7 @@ export const SleepTrackerScreen: FC<SleepTrackerScreenProps> = observer(function
 const Etime= new Date("2024-05-31")
 
     try {
-      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/getsleep", {
+      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/sleep/getsleep", {
         UserID: UserID, // Replace with actual user ID
         SDate:Stime.toISOString(),
       EDate:Etime.toISOString()
@@ -66,7 +66,7 @@ const Etime= new Date("2024-05-31")
 
     const now= new Date()
     try {
-      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/insertsleep", {
+      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/sleep/insertsleep", {
         UserID: UserID, // Replace with actual user ID
         SleepDuration: newSleepDuration,
         // Date: now.toISOString(),
@@ -86,7 +86,7 @@ const Etime= new Date("2024-05-31")
 
   const deleteSleepRecord = async (id: string) => {
     try {
-      const response = await axios.delete("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/sleep/deleteSleepRecord", {
+      const response = await axios.delete("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/sleep/deleteSleepRecord", {
         data: { UserID: UserID, SleepID: id } // Replace with actual user ID and sleep record ID
       });
       const data = response.data;
@@ -129,7 +129,7 @@ const Etime= new Date("2024-05-31")
         renderItem={({ item }) => (
           <View style={styles.historyItem}>
             <Text>{item.timestamp}: {item.sleepDuration} hours</Text>
-            <Button text="Delete" onPress={() => deleteSleepRecord(item.id)} style={styles.deleteButton} />
+            {/* <Button text="Delete" onPress={() => deleteSleepRecord(item.id)} style={styles.deleteButton} /> */}
           </View>
         )}
       />

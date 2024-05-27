@@ -11,13 +11,16 @@ export interface MealItemProps {
   style?: StyleProp<ViewStyle>;
   mealName: string;
   calories: string;
+  Proteins:string;
+  Fats:string;
+  Carbohydrates:string;
 }
 
 /**
  * Describe your component here
  */
 export const MealItem = observer(function MealItem(props: MealItemProps) {
-  const { style, mealName, calories } = props;
+  const { style, mealName, calories ,Proteins,Fats,Carbohydrates} = props;
   const $styles = [styles.container, style];
 
   return (
@@ -25,6 +28,14 @@ export const MealItem = observer(function MealItem(props: MealItemProps) {
       <View style={styles.card}>
         <Text  text={mealName} preset="h3"/>
         <Text style={styles.calories}>Calories: {calories}</Text>
+        <Text style={styles.calories}>Protein: {Proteins}</Text>
+        <Text style={styles.calories}>Fat: {Fats}</Text>
+        <Text style={styles.calories}>Protein: {Proteins}</Text>
+        <Text style={styles.calories}>Carbohydrates: {Carbohydrates}</Text>
+
+
+
+
       </View>
     </View>
   );

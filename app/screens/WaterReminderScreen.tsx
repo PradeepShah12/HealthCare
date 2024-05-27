@@ -168,7 +168,9 @@ async function scheduleNotification() {
     </TouchableOpacity>
     <TouchableOpacity
       style={{ padding: 5 }}
-      onPress={() => setWaterGoal(waterGoal - 250)}
+      onPress={() =>{
+        if(waterGoal>0)
+   {     setWaterGoal(waterGoal - 250)}}}
     >
       <DynamicIcon iconName="remove-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
     </TouchableOpacity>
@@ -271,7 +273,11 @@ style={{padding:spacing.small,borderRadius:spacing.small,maxWidth:calculateRelat
           </TouchableOpacity>
           <TouchableOpacity
             style={{ padding: 5 }}
-            onPress={() => setReminderTime(reminderTime - 10)}
+            onPress={() =>
+          {    
+            if(reminderTime)
+       {       setReminderTime(reminderTime - 10)}
+            }}
           >
             <DynamicIcon iconName="remove-circle" iconSize={26} iconFamily="Ionicons" iconColor="#2389da" />
           </TouchableOpacity>

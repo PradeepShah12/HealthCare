@@ -21,17 +21,19 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
   const [loading, setLoading] = useState<boolean>(true);
   const { UserID } = useAppSelector(state => state.user.user)
   const navigation = useNavigation();
-
+  const Stime= new Date("2024-05-01")
+  const Etime= new Date("2024-05-31")
   useEffect(() => {
     fetchIntake();
   }, []);
 
   const fetchIntake = async () => {
     try {
-      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeals", {
+      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getIntake", {
       
-          UserID: UserID, // Replace with actual user ID
-        
+          UserID: UserID,
+          SDate:Stime.toISOString(),
+          EDate:Etime.toISOString()        
       });
       const data = response.data;
       console.log(data,'data in respnse')
@@ -50,7 +52,28 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
       </Screen>
     );
   }
-
+  function aggregateNutritionalData(meals) {
+    return meals.reduce((acc, meal) => {
+      acc.calories += meal.Calories;
+      acc.proteins += meal.Proteins;
+      acc.fats += meal.Fats;
+      acc.carbohydrates += meal.Carbohydrates;
+      return acc;
+    }, {
+      calories: 0,
+      proteins: 0,
+      fats: 0,
+      carbohydrates: 0
+    });
+  }
+  
+  // Example usage:
+  
+  const totals = aggregateNutritionalData(meals);
+  console.log(totals);
+  // Output will be:
+  // { calories: 1100, proteins: 45, fats: 25, carbohydrates: 110 }
+  
   return (
     <Screen style={styles.container} preset="scroll" safeAreaEdges={["top"]}>
       <View style={styles.content}>
@@ -59,17 +82,17 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddMeal')}>
           <Text style={styles.buttonText}>Add Meal</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MealHistory')}>
+        {/* <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MealHistory')}>
           <Text style={styles.buttonText}>Meal History</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <Text text="Nutrition Summary" preset="h3bold" />
       <Spacer size="small" />
-      {meals.length > 0 && <NutritionSummary meal={meals[0]} />}
+      {meals.length > 0 && <NutritionSummary meal={totals} />}
       <Text text="Nutrition Log" preset="h3bold" />
       <Spacer size="small" />
       {meals.map(meal => (
-        <MealItem key={meal.id} mealName={meal.name} calories={meal.calories} />
+        <MealItem key={meal.CALORIEINTAKEID} mealName={meal.DateOFINTAKE} calories={meal.Calories} Proteins={meal.Proteins} Fats={meal.Fats} Carbohydrates={meal.Carbohydrates}  />
       ))}
     </Screen>
   );

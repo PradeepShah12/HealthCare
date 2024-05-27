@@ -44,12 +44,12 @@ export const ForgotPasswordScreen: FC<ForgotPasswordScreenProps> = (props) => {
     mutationFn: (_body:ResetPasswordForm ) =>AuthService.forgotPassword(_body),
     onSuccess: (_data) => {
       
-            _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: 'sdfs' })      // forgotPassword({ Email: values.Email.toLowerCase() })
+            _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: _data?.Otp })      // forgotPassword({ Email: values.Email.toLowerCase() })
 
       // _navigation.push("ForgotPasswordEmailSent", { id: null})
     },
     onError: (error: AxiosError<ApiErrorResponse>) => {
-      _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: 'sdfs' })      // forgotPassword({ Email: values.Email.toLowerCase() })
+      // _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: 'sdfs' })      // forgotPassword({ Email: values.Email.toLowerCase() })
 
       dispatch(
         setError({

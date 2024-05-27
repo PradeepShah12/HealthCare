@@ -57,7 +57,7 @@ const {navigation} = props
 
 
 
-      <SettingCard noBorder title={"Privacy Policy"} iconName={"document-lock-outline"} iconFamily="Ionicons" />
+      {/* <SettingCard noBorder title={"Privacy Policy"} iconName={"document-lock-outline"} iconFamily="Ionicons" /> */}
       <Divider />
 
       <Spacer size="medium" />

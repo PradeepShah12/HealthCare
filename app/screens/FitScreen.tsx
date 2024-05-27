@@ -35,7 +35,7 @@ export const FitScreen: FC<FitScreenProps> = observer(function FitScreen() {
   console.log(route.params.workoutType,'exercise')
   const insertWorkout = async () => {
     try {
-      await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/workout/insertWorkout`, {
+      await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/workout/insertWorkout`, {
         UserID: UserID,
         WorkoutType:route.params.workoutType,
         duration:120,

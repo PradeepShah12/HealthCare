@@ -27,6 +27,12 @@ class Auth {
     return response.data
   }
 
+  async subscribe(body: {UserID:string,IsSubscribed:boolean}) {
+    const response = await api.post<LoginResponse>("/user/update/subscription", body)
+    return response.data
+  }
+
+
   async authGoogle(accessToken: string) {
     const response = await api.get<LoginResponse>(`/auth/oauth2?access_token=${accessToken}&provider=google`)
     return response.data
@@ -67,7 +73,7 @@ class Auth {
   }
 
   async resetPassword(body: ResetPasswordDto) {
-    const response = await api.post("/user/singup/resetpassword", body)
+    const response = await api.post("/user/signup/resetpassword", body)
 
     return response.data
   }

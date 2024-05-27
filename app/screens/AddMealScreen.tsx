@@ -23,7 +23,7 @@ interface Meal {
 
 interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
-const API_BASE = "https://55e4-115-64-55-67.ngrok-free.app/api/";
+const API_BASE = "https://348e-115-64-55-67.ngrok-free.app/api/";
 
 export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealScreen() {
   const [cuisines, setCuisines] = useState<Cuisine[]>([
@@ -72,7 +72,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getFood`, {
+      const response = await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getFood`, {
       CuisineID: cuisineId ,
       UserID,
       });
@@ -83,8 +83,9 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
   };
 
   const fetchMeals = async () => {
+    console.log(selectedCuisine,selectedFood,'selected cuising and food')
     try {
-      const response = await axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeal`,{UserID});
+      const response = await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeals`,{UserID,CuisineID:selectedCuisine?.CuisineId,FoodID:selectedFood?.foodId});
       setMeals(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch meals");
@@ -93,9 +94,11 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const addMeal = async () => {
     try {
-      await axios.post(`http://localhost:3004/api/user/activity/nutritionTracker/InsertIntaker`, {
+      await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/InsertIntake`, {
         UserID: UserID, // replace with actual user ID
-        MealID: selectedMeal?.id,
+        MealID: selectedMeal?.mealId,
+    CuisineID:selectedCuisine?.CuisineId,
+    FoodID:selectedFood?.foodId
       });
       alert("Meal added successfully!");
     } catch (error) {
@@ -126,7 +129,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => setSelectedFood(item)} style={styles.item}>
-                <Text style={styles.itemText}>{item.name}</Text>
+                <Text style={styles.itemText}>{item.FoodName}</Text>
               </TouchableOpacity>
             )}
           />
@@ -141,7 +144,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => setSelectedMeal(item)} style={styles.item}>
-                <Text style={styles.itemText}>{item.name}</Text>
+                <Text style={styles.itemText}>{item.mealType}</Text>
               </TouchableOpacity>
             )}
           />

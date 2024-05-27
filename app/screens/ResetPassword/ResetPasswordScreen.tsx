@@ -22,24 +22,13 @@ interface ResetPasswordForm {
   NewPassword: string
 }
 
-const validation = Yup.object().shape({
-  NewPassword: Yup.string().required("New Password is required").matches(passwordRegex, {
-    message: "Password must be at least 8 characters long with a special character",
-  }),
 
-  ConfirmPassword: Yup.string()
-    .matches(passwordRegex, {
-      message: "Password must be at least 8 characters long with a special character",
-    })
-    .oneOf([Yup.ref("NewPassword")], "Passwords do not match")
-    .required("Confirm Password is required"),
-})
 
 interface ResetPasswordScreenProps extends AuthStackScreenProps<"ResetPassword"> {}
 
 export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
   const _navigation = props.navigation
-  const { reset_token: _resetToken,  } = props.route.params
+  const { uid: _resetToken,  } = props.route.params
 
   const [isSecureEntry, setIsSecureEntry] = useState(true)
 
@@ -67,7 +56,20 @@ const dispatch = useAppDispatch()
   },
 })
 
+console.log(_resetToken,'reset token')
 
+const validation = Yup.object().shape({
+  NewPassword: Yup.string().required("New Password is required").matches(passwordRegex, {
+    message: "Password must be at least 8 characters long with a special character",
+  }),
+Otp:Yup.string().matches(_resetToken,'Enter Valid Otp'),
+  ConfirmPassword: Yup.string()
+    .matches(passwordRegex, {
+      message: "Password must be at least 8 characters long with a special character",
+    })
+    .oneOf([Yup.ref("NewPassword")], "Passwords do not match")
+    .required("Confirm Password is required"),
+})
 
   const handleReset = (_values: ResetPasswordForm, actions: FormikHelpers<ResetPasswordForm>) => {
     actions.validateForm()

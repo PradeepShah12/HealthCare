@@ -38,7 +38,7 @@ console.log(Stime.toISOString(),'time')
 
 
 const  heartRate=async()=>{
-  axios.post(`https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/getheartbeat`,{
+  axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/getheartbeat`,{
       UserID:user.UserID,
       SDate:Stime.toISOString(),
       EDate:Etime.toISOString()
@@ -73,7 +73,7 @@ const  heartRate=async()=>{
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/insertheartbeat', {
+      fetch('https://348e-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const  heartRate=async()=>{
               renderItem={({ item }) => (
                 <View style={styles.historyItem}>
                   <Text>{item.timestamp}: {item.heartRate}</Text>
-                  <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} />
+                  {/* <Button text="Delete" onPress={() => deleteHeartRate(item.id)} style={styles.deleteButton} /> */}
                 </View>
               )}
               contentContainerStyle={{ paddingBottom: calculateRelativeHeight(500) }}

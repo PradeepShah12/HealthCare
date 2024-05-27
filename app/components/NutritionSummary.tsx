@@ -34,11 +34,11 @@ export const NutritionSummary = observer(function NutritionSummary(props: Nutrit
       </View>
       <View style={styles.card}>
         <Text preset="body2bold" text={"Protein (g)"}/>
-        <Text text={meal.protein}/>
+        <Text text={meal.proteins}/>
       </View>
       <View style={styles.card}>
         <Text preset="body2bold" text={"Carbs (g)"}/>
-        <Text text={meal.carbs}/>
+        <Text text={meal.carbohydrates}/>
       </View>
       <View style={styles.card}>
         <Text preset="body2bold" text={"Fats (g)"}/>

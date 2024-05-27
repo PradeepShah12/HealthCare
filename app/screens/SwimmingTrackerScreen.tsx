@@ -40,7 +40,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 const Etime= new Date("2024-05-31")
 
     try {
-      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/swimming/getswimming", {
+      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/swimming/getswimming", {
         UserID: UserID, // Replace with actual user ID
         SDate:Stime.toISOString(),
         EDate:Etime.toISOString()// Replace with actual end date
@@ -48,13 +48,17 @@ const Etime= new Date("2024-05-31")
       const data = response.data;
       const output = data.map((item, index) => ({
         id: (index + 1).toString(),
-        duration: item.Duration / 60,  // converting seconds to minutes
+        duration: item.Duration ,  // converting seconds to minutes
         timestamp: item.Timestamp
       }));
       
       setSwimmingHistory(output);
-      const totalDuration = data.reduce((total: number, entry: SwimmingData) => total + entry.duration, 0);
+      console.log(data,'adding duration')
+      const totalDuration = data?.reduce((total: number, entry: SwimmingData) => total + entry.Duration, 0);
+      console.log(totalDuration,'total duration')
+
       setCurrentSwimmingDuration(totalDuration);
+
     } catch (error) {
       Alert.alert("Error", "Failed to fetch swimming history.");
     }
@@ -68,15 +72,17 @@ const Etime= new Date("2024-05-31")
     };
 console.log(UserID,'user id')
     try {
-      const response = await axios.post("https://55e4-115-64-55-67.ngrok-free.app/api/user/activity/swimming/insertswimming", {
+      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/swimming/insertswimming", {
         UserID:UserID, // Replace with actual user ID
         Duration: newSwimmingDuration,
       });
       const data = response.data;
-      if (data.success) {
+      if (data.status==true) {
         setSwimmingHistory(prevState => [...prevState, newEntry]);
         setCurrentSwimmingDuration(prevState => prevState + newSwimmingDuration);
         setNewSwimmingDuration(0);
+        Alert.alert("Success", "Successfully added");
+
       } else {
         Alert.alert("Error", "Failed to add swimming record.");
       }
@@ -96,7 +102,7 @@ console.log(UserID,'user id')
         <View style={$stats}>
           <View style={$stat}>
             <Text preset="h2bold" style={$statLabel}>Current Swimming Duration</Text>
-            <Text preset="h1" style={$statValue}>{swimmingHistory[swimmingHistory?.length - 1]?.duration} mins</Text>
+            <Text preset="h1" style={$statValue}>{currentSwimmingDuration} mins</Text>
           </View>
         </View>
         <View style={$inputContainer}>
