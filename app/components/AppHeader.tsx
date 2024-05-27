@@ -11,6 +11,7 @@ import { NativeStackHeaderProps } from "@react-navigation/native-stack"
 import { BottomTabHeaderProps } from "@react-navigation/bottom-tabs"
 import { goBack } from "app/navigators"
 import { Spacer } from "./Spacer"
+import { useRoute } from "@react-navigation/native"
 
 export interface AppHeaderProps extends NativeStackHeaderProps {
   /**
@@ -26,6 +27,7 @@ export interface AppHeaderBottomTabProps extends BottomTabHeaderProps {
    */
   style?: StyleProp<ViewStyle>
   line?: StyleProp<ViewStyle>
+  noBack?:boolean
 
 }
 
@@ -33,19 +35,25 @@ export interface AppHeaderBottomTabProps extends BottomTabHeaderProps {
  * Describe your component here
  */
 export const AppHeader = (props: AppHeaderProps|AppHeaderBottomTabProps) => {
-  const { style, line,navigation } = props
+  const { style, line,navigation, } = props
+  const route= useRoute()
   const $styles = [$container, style]
   const $lineStyle = [$line, line]
-
   return (
     <View style={$styles}>
-      <IconBackground onPress={()=>goBack()} style={{height:calculateRelativeHeight(30) , width:calculateRelativeHeight(30),borderWidth:1,borderRadius:calculateRelativeHeight(30),alignItems:'center',justifyContent:'center'}} >
+      <View style={{width:'32%'}}>
+
+      {route.name!=="LoggedIn"&&<IconBackground onPress={()=>goBack()} style={{height:calculateRelativeHeight(30) , width:calculateRelativeHeight(30),borderWidth:1,borderRadius:calculateRelativeHeight(30),alignItems:'center',justifyContent:'center'}} >
 <DynamicIcon iconName="chevron-left" iconFamily="FontAwesome"  />
-</IconBackground>
+</IconBackground>}
+</View><View>
+
 <Spacer size="small" orientation="width"/>
       <Text style={$text} tx="common.healthCare" preset="h1bold" />
       <View style={{ width: spacing.tiny }} />
       {/* <View style={$lineStyle} /> */}
+      </View>
+
       <View style={$headerIcon}>
      
 <IconBackground onPress={()=>navigation.navigate("Profile")}>
@@ -86,7 +94,8 @@ const $headerIcon:ViewStyle={
   // borderWidth:1,
   // flex:1,
   flexDirection:'row',
-  justifyContent:'space-evenly'
+  justifyContent:'space-evenly',
+  width:"33%"
 }
 
 const $badgeStyle:ViewStyle={

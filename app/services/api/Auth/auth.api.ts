@@ -27,6 +27,11 @@ class Auth {
     return response.data
   }
 
+  async updateProfile(body: RegisterDto) {
+    const response = await api.post<LoginResponse>("/user/update/user", body)
+    return response.data
+  }
+
   async subscribe(body: {UserID:string,IsSubscribed:boolean}) {
     const response = await api.post<LoginResponse>("/user/update/subscription", body)
     return response.data

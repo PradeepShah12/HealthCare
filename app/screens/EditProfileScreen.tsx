@@ -7,9 +7,15 @@ import { Formik } from "formik"
 import * as Yup from "yup"
 import RNPickerSelect from "react-native-picker-select"
 import { spacing } from "app/theme"
+import { useMutation } from "@tanstack/react-query"
+import { LoginResponse, RegisterDto } from "app/services/api/Auth/types"
+import { AuthService } from "app/services/api/Auth/auth.api"
+import { useAppDispatch, useAppSelector } from "app/store"
+import { setUser } from "app/store/User/user.slice"
+import { setError, setSuccess } from "app/store/Error/error.slice"
 
 
-const countryList = [
+const CountryList = [
   { label: "Afghanistan", value: "AF" },
   { label: "Albania", value: "AL" },
   { label: "Algeria", value: "DZ" },
@@ -153,40 +159,83 @@ const countryList = [
   { label: "Romania", value:"ROm"}]
 
 
-
-
+  const DietType = [
+    { label: "VEG", value: "VEG" },
+    { label: "NON-VEG", value: "NON-VEG" },
+    { label: "VEGAN", value: "VEGAN" },]
 
 
 
 const validation = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  height: Yup.string().required("Height is required"),
-  weight: Yup.string().required("Weight is required"),
-  country: Yup.string().required("Country is required"),
-  dateOfBirth: Yup.string().required("Date of Birth is required"),
+  Height: Yup.string(),
+  Weight: Yup.string(),
+  Country: Yup.string(),
+  DietType:Yup.string(),
 })
 
 interface InitialValues {
-  username: string,
-  height: string,
-  weight: string,
-  country: string,
-  dateOfBirth: string
+  Height: string,
+  Weight: string,
+  Country: string,
+  DietType:string,
+  Password:string,
 }
 
 interface EditProfileScreenProps extends AppStackScreenProps<"EditProfile"> {}
 
 export const EditProfileScreen: FC<EditProfileScreenProps> = observer(function EditProfileScreen() {
   const initialValues: InitialValues = {
-    username: "",
-    height: "",
-    weight: "",
-    country: "",
-    dateOfBirth: ""
+    Height: "",
+    Weight: "",
+    Country: "",
+    DietType: "",
+    Password:"",
+
   }
 
+  const {UserID}=useAppSelector(state=>state.user.user)
+  const dispatch = useAppDispatch()
+  const { mutate: update } = useMutation({
+    mutationFn: (body: RegisterDto) => AuthService.updateProfile(body),
+    onSuccess: (response: LoginResponse) => {
+      // perform other side effects on success - save tokens
+      console.log(response, 'user login response')
+     
+      dispatch(setSuccess({
+        errorMessage: response?.message,
+        isSnackBarVisible: true,
+        type:'success'
+      }))
+      // dispatch(setUser({ user: response?.result[0][0] }))
+    },
+    onError: (error) => {
+      // dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
+
+      dispatch(
+        setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error }),
+      )
+    },
+  })
   const onSubmit = (values: InitialValues) => {
-    console.log(values)
+    function extractAndKeepStrings(obj) {
+      const result = {};
+      for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+              const value = obj[key];
+              const intValue = parseInt(value, 10);
+              if (!isNaN(intValue) && intValue.toString() === value) {
+                  result[key] = intValue;
+              } else {
+                  result[key] = value;
+              }
+          }
+      }
+      return result;
+  }
+  const integers = extractAndKeepStrings(values);
+   
+    
+    update({...integers,UserID:UserID})
   }
 
   return (
@@ -209,56 +258,60 @@ export const EditProfileScreen: FC<EditProfileScreenProps> = observer(function E
         {({ handleChange, handleBlur, values, errors, submitForm, setFieldValue }) => (
           <View style={$formContainer}>
             <View>
-              <TextField
-                labelTx="common.username"
-                value={values.username}
-                containerStyle={$textInputStyle}
-                onChangeText={handleChange("username")}
-                status={errors.username ? "error" : null}
-                helper={errors.username}
-                onBlur={handleBlur("username")}
-              /> 
+      
       
               <TextField
                 labelTx="common.height"
-                value={values.height}
+                value={values.Height}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("height")}
-                status={errors.height ? "error" : null}
-                helper={errors.height}
-                onBlur={handleBlur("height")}
+                onChangeText={handleChange("Height")}
+                status={errors.Height ? "error" : null}
+                helper={errors.Height}
+                onBlur={handleBlur("Height")}
               /> 
               
               <TextField
                 labelTx="common.weight"
-                value={values.weight}
+                value={values.Weight}
                 containerStyle={$textInputStyle}
-                onChangeText={handleChange("weight")}
-                status={errors.weight ? "error" : null}
-                helper={errors.weight}
-                onBlur={handleBlur("weight")}
+                onChangeText={handleChange("Weight")}
+                status={errors.Weight ? "error" : null}
+                helper={errors.Weight}
+                onBlur={handleBlur("Weight")}
               /> 
-
+    
+    <TextField
+                labelTx="common.password"
+                value={values.Password}
+                containerStyle={$textInputStyle}
+                onChangeText={handleChange("Password")}
+                status={errors.Password ? "error" : null}
+                helper={errors.Password}
+                onBlur={handleBlur("Password")}
+              /> 
               <View style={$pickerContainer}>
                 <Text preset="body2Inactive" text="Country" />
                 <RNPickerSelect
-                  onValueChange={(value) => setFieldValue("country", value)}
-                  items={countryList}
+                  onValueChange={(value) => setFieldValue("Country", value)}
+                  items={CountryList}
                   style={pickerSelectStyles}
-                  value={values.country}
+                  value={values.Country}
                 />
-                {errors.country && <Text style={$errorText}>{errors.country}</Text>}
+                {errors.Country && <Text style={$errorText}>{errors.Country}</Text>}
               </View>
 
-              <TextField
-                labelTx="common.dateOfBirth"
-                value={values.dateOfBirth}
-                containerStyle={$textInputStyle}
-                onChangeText={handleChange("dateOfBirth")}
-                status={errors.dateOfBirth ? "error" : null}
-                helper={errors.dateOfBirth}
-                onBlur={handleBlur("dateOfBirth")}
-              /> 
+              <View style={$pickerContainer}>
+                <Text preset="body2Inactive" text="Diet Type" />
+                <RNPickerSelect
+                  onValueChange={(value) => setFieldValue("DietType", value)}
+                  items={DietType}
+                  style={pickerSelectStyles}
+                  value={values.DietType}
+                />
+                {errors.Country && <Text style={$errorText}>{errors.DietType}</Text>}
+              </View>
+
+       
               
               <Spacer size="medium" />
               <Button

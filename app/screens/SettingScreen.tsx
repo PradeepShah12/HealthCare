@@ -45,7 +45,7 @@ const {navigation} = props
       <Text text="Setting" preset="h3" />
 
       <Spacer size="extraSmall" />
-      <SettingCard style={$topCard} title={"Edit Profile"} iconName={"edit"} iconFamily="AntDesign" />
+      <SettingCard style={$topCard} title={"Edit Profile"} iconName={"edit"} iconFamily="AntDesign" onPress={()=>navigation.navigate('EditProfile')} />
 
 
       <Spacer size="medium" />
