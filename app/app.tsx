@@ -37,6 +37,7 @@ import { Provider } from "react-redux"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import * as Notifications from 'expo-notifications';
 import { FitnessContext } from "./Context"
+import { PortalHost, PortalProvider } from "@gorhom/portal"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 if (__DEV__ && Platform.OS === "ios") {
@@ -148,7 +149,13 @@ function App(props: AppProps) {
 
         <QueryClientProvider client={queryClient} >
           <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+
+
+          <PortalProvider>
+                <PortalHost name="snackbar"  />
+      
             <ErrorBoundary catchErrors={Config.catchErrors}>
+
               <GestureHandlerRootView style={$container}>
                 <FitnessContext>
                   <AppNavigator
@@ -159,6 +166,7 @@ function App(props: AppProps) {
                 </FitnessContext>
               </GestureHandlerRootView>
             </ErrorBoundary>
+            </PortalProvider>
           </SafeAreaProvider>
         </QueryClientProvider>
       </PersistGate>

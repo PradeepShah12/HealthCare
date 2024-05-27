@@ -12,8 +12,8 @@ import {
 } from "@react-navigation/native"
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack"
 import { observer } from "mobx-react-lite"
-import React from "react"
-import { useColorScheme } from "react-native"
+import React, { useEffect } from "react"
+import { Platform, useColorScheme } from "react-native"
 import * as Screens from "app/screens"
 import Config from "../config"
 import { useStores } from "../models"
@@ -22,9 +22,11 @@ import { navigate, navigationRef, useBackButtonHandler } from "./navigationUtili
 import { colors } from "app/theme"
 import { AuthStack } from "./AuthStack"
 import { LoggedInNavigator } from "./LoggedInNavigator"
-import { useAppSelector } from "app/store"
+import { useAppDispatch, useAppSelector } from "app/store"
 import { DynamicIcon } from "app/components/DynamicIcon"
 import { AppHeader } from "app/components"
+import { setError, setSuccess } from "app/store/Error/error.slice"
+import { Snackbar } from "react-native-paper"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -153,9 +155,30 @@ export interface NavigationProps
 
 export const AppNavigator = observer(function AppNavigator(props: NavigationProps) {
   const colorScheme = useColorScheme()
+const dispatch = useAppDispatch()
+const error = useAppSelector((state) => state.error)
 
   useBackButtonHandler((routeName) => exitRoutes.includes(routeName))
+  useEffect(() => {
+    const timer = setTimeout(
+      () => {
+        if (error.isSnackBarVisible) {
 
+          if (error.type === "success") {
+            dispatch(setSuccess({ isSnackBarVisible: false, errorMessage: "", type: error?.type }))
+          } else {
+            dispatch(setError({ isSnackBarVisible: false, errorMessage: "", type: error?.type }))
+          }
+        }
+      },
+      Platform.OS === "android" ? 3000 : 1800,
+    )
+
+    return () => clearTimeout(timer);
+
+
+
+  },)
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -163,6 +186,22 @@ export const AppNavigator = observer(function AppNavigator(props: NavigationProp
       {...props}
     >
       <AppStack />
+      <Snackbar
+        visible={error.isSnackBarVisible}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onDismiss={() => { }}
+        style={{
+          backgroundColor:
+            error.type && error.type === "success"
+              ? colors.palette.green
+              : error.type && error.type === "error"
+                ? colors.error
+                : undefined,
+        }}
+        duration={Snackbar.DURATION_MEDIUM}
+      >
+        {error.errorMessage}
+      </Snackbar>
     </NavigationContainer>
   )
 })

@@ -80,7 +80,7 @@ export const LoginScreen: FC<SignUpWithEmailScreenProps> = (props) => {
       // dispatch(userLogin({isAuthenticated:true,token:'sampletoken'}))
 
       dispatch(
-        setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error?.message }),
+        setError({ isSnackBarVisible: true, errorMessage: error.response.data?.error }),
       )
     },
   })
