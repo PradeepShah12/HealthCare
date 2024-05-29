@@ -42,9 +42,9 @@ export const ForgotPasswordScreen: FC<ForgotPasswordScreenProps> = (props) => {
 
   const { mutate: forgotPassword, isPending:isLoading } = useMutation({
     mutationFn: (_body:ResetPasswordForm ) =>AuthService.forgotPassword(_body),
-    onSuccess: (_data) => {
+    onSuccess: (_data,body) => {
       
-            _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: _data?.Otp })      // forgotPassword({ Email: values.Email.toLowerCase() })
+            _navigation.navigate("ResetPassword", { reset_token: 'sdf', uid: _data?.Otp ,email:body?.Email})      // forgotPassword({ Email: values.Email.toLowerCase() })
 
       // _navigation.push("ForgotPasswordEmailSent", { id: null})
     },

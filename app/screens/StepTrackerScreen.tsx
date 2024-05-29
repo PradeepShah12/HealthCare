@@ -33,7 +33,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const fetchStepRateHistory = async () => {
     try {
-      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/getsteps",
+      const response = await axios.post("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/getsteps",
         {
 
 
@@ -71,7 +71,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
         timestamp: new Date().toDateString(),
       };
       try {
-        const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/insertsteps", {
+        const response = await axios.post("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/insertsteps", {
           UserID: UserID, // Replace with actual user ID
           Steps: parsedStepRate,
           Date: new Date(),
@@ -93,7 +93,7 @@ export const StepTrackerScreen: FC<StepTrackerScreenProps> = observer(function S
 
   const deleteStepRate = async (id: string, stepRate: number) => {
     try {
-      const response = await axios.delete("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/deletesteps", {
+      const response = await axios.delete("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/stepcounter/deletesteps", {
         data: { UserID: UserID, StepID: id } // Replace with actual user ID and step ID
       });
       const data = response.data;

@@ -29,7 +29,7 @@ export const NutrititonTrackerScreen: FC<NutrititonTrackerScreenProps> = observe
 
   const fetchIntake = async () => {
     try {
-      const response = await axios.post("https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getIntake", {
+      const response = await axios.post("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getIntake", {
       
           UserID: UserID,
           SDate:Stime.toISOString(),

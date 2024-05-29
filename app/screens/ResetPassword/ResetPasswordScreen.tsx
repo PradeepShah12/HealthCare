@@ -28,7 +28,7 @@ interface ResetPasswordScreenProps extends AuthStackScreenProps<"ResetPassword">
 
 export const ResetPasswordScreen: FC<ResetPasswordScreenProps> = (props) => {
   const _navigation = props.navigation
-  const { uid: _resetToken,  } = props.route.params
+  const { uid: _resetToken,email  } = props.route.params
 
   const [isSecureEntry, setIsSecureEntry] = useState(true)
 
@@ -74,10 +74,9 @@ Otp:Yup.string().matches(_resetToken,'Enter Valid Otp'),
   const handleReset = (_values: ResetPasswordForm, actions: FormikHelpers<ResetPasswordForm>) => {
     actions.validateForm()
     resetPassword({
-      Otp: _values.Otp,
+   
       NewPassword: _values.NewPassword,
-
-      ConfirmPassword: _values.ConfirmPassword,
+Email:email,
     })
      
   }

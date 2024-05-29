@@ -1,10 +1,13 @@
 import React, { FC, useState, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { StyleSheet, TouchableOpacity, View, TextInput, FlatList, Alert } from "react-native";
+import { StyleSheet, TouchableOpacity, View, TextInput, FlatList, Alert, ActivityIndicator } from "react-native";
 import { AppStackScreenProps } from "app/navigators";
-import { Screen, Text } from "app/components";
+import { IconBackground, Screen, Spacer, Text, TextField } from "app/components";
 import axios from "axios";
 import { useAppSelector } from "app/store";
+import { colors, spacing } from "app/theme";
+import { $globalTextStyles } from "app/theme/styles";
+import { DynamicIcon } from "app/components/DynamicIcon";
 
 interface Cuisine {
   id: string;
@@ -23,7 +26,7 @@ interface Meal {
 
 interface AddMealScreenProps extends AppStackScreenProps<"AddMeal"> { }
 
-const API_BASE = "https://348e-115-64-55-67.ngrok-free.app/api/";
+const API_BASE = "https://e0a9-115-64-55-67.ngrok-free.app/api/";
 
 export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealScreen() {
   const [cuisines, setCuisines] = useState<Cuisine[]>([
@@ -31,7 +34,18 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
     { id: "2", name: "Mexican" },
     { id: "3", name: "Chinese" },
   ]);
+
+  const [searchResult,setSearchResult]=useState({
+    FoodName:'',
+    Cal:'',
+    Carb:"",
+    Proteins:"",
+    Fats:"'"
+  })
   const [selectedCuisine, setSelectedCuisine] = useState<Cuisine | null>(null);
+  const [searchQuery,setSeearchQuery]=useState('')
+  const [isLoading,setIsLoading]=useState()
+  const [selectedCustomFood,setSelectedCustomFood]=useState()
   const [foods, setFoods] = useState<Food[]>([
     { id: "1", name: "Pizza" },
     { id: "2", name: "Pasta" },
@@ -58,8 +72,19 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
   useEffect(() => {
     if (selectedFood) {
       fetchMeals();
+      
     }
+
   }, [selectedFood]);
+
+
+
+  useEffect(() => {
+    fetchCustomFood({query:searchQuery})
+  
+ 
+  }, [searchQuery])
+  
 
   const fetchCuisines = async () => {
     try {
@@ -72,7 +97,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const fetchFoods = async (cuisineId: string) => {
     try {
-      const response = await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getFood`, {
+      const response = await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getFood`, {
       CuisineID: cuisineId ,
       UserID,
       });
@@ -82,10 +107,28 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
     }
   };
 
+  
+
+
+  const fetchCustomFood = async (body) => {
+    setIsLoading(true)
+    try {
+      const response = await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/mealdata`,body);
+      setSearchResult(response?.data?.items);
+      setIsLoading(false)
+
+    } catch (error) {
+      setIsLoading(false)
+
+      // Alert.alert("Error", "Failed to fetch meals");
+    }
+  };
+
+
   const fetchMeals = async () => {
     console.log(selectedCuisine,selectedFood,'selected cuising and food')
     try {
-      const response = await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeals`,{UserID,CuisineID:selectedCuisine?.CuisineId,FoodID:selectedFood?.foodId});
+      const response = await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/getMeals`,{UserID,CuisineID:selectedCuisine?.CuisineId,FoodID:selectedFood?.foodId});
       setMeals(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch meals");
@@ -94,7 +137,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
 
   const addMeal = async () => {
     try {
-      await axios.post(`https://348e-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/InsertIntake`, {
+      await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/InsertIntake`, {
         UserID: UserID, // replace with actual user ID
         MealID: selectedMeal?.mealId,
     CuisineID:selectedCuisine?.CuisineId,
@@ -105,9 +148,49 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
       Alert.alert("Error", "Failed to add meals");
     }
   };
+  const addCustomMeal = async () => {
+    try {
+      await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/InsertIntake`, 
+      {FoodName:selectedCustomFood?.name,
+      Cal:selectedCustomFood?.calories,
+      Carb:selectedCustomFood?.carbohydrates_total_g,
+      Proteins:selectedCustomFood?.protein_g,
+      Fats:selectedCustomFood?.fat_total_g,
+      UserID:UserID,
+      });
+      Alert.alert("Meal added successfully!");
+    } catch (error) {
+      Alert.alert("Error", "Failed to add meals");
+    }
+  };
+
+  const hanldeCustomFood=(food)=>{
+    setSelectedCustomFood(food);
+    setSelectedMeal();
+    setSelectedCuisine();
+    setSelectedFood();
+
+  }
+
+console.log(searchResult,'searcjResi;t length')
 
   return (
-    <Screen safeAreaEdges={["top"]} style={styles.container}>
+    <Screen  style={styles.container}>
+      <TextField
+      onChangeText={setSeearchQuery}
+      label="Search Food"
+      style={{
+      width:"90%"}}/>
+      
+      {isLoading&&<ActivityIndicator />}
+    {searchResult?.length>0&&<View>
+      {searchResult.map((item,index)=>{return(
+        <TouchableOpacity  key={item?.name} onPress={()=>hanldeCustomFood(item)} style={{padding:spacing.small,backgroundColor:colors.palette.secondary200}}>
+          <Text text={item.name}/>
+          </TouchableOpacity>
+      )})}
+      </View>}
+      <Spacer size="medium"/>
       <Text style={styles.title}>Add Meal</Text>
 
       <Text style={styles.label}>Select Cuisine</Text>
@@ -156,6 +239,31 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
           <Text style={styles.buttonText}>Add Meal</Text>
         </TouchableOpacity>
       )}
+
+{selectedCustomFood && (
+        <View style={{backgroundColor:colors.palette.secondary200,padding:spacing.small,borderRadius:spacing.small,marginTop:spacing.small}}>
+         <View style={{borderRadius:spacing.medium,backgroundColor:colors.palette.neutral100,width:spacing.medium}}>
+         <DynamicIcon iconName="close" iconSize={spacing.medium} iconOnPress={()=>setSelectedCustomFood()}/>
+
+         </View>
+          <Text  preset="h2bold" style={[$globalTextStyles.center,styles.buttonText]}>{selectedCustomFood?.name?.toUpperCase()}</Text>
+          <Text style={styles.buttonText}>Fats:{selectedCustomFood?.fat_total_g}</Text>
+          <Text style={styles.buttonText}>Proteins:{selectedCustomFood?.protein_g}</Text>
+          <Text style={styles.buttonText}>Carbs:{selectedCustomFood?.carbohydrates_total_g}</Text>
+
+        </View>
+      )}
+
+
+
+
+
+{selectedCustomFood && (
+        <TouchableOpacity style={styles.addButton} onPress={()=>addCustomMeal()}>
+          <Text style={styles.buttonText}>Add Selected Food</Text>
+        </TouchableOpacity>
+      )}
+
     </Screen>
   );
 });
