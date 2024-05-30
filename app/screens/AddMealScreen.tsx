@@ -150,7 +150,7 @@ export const AddMealScreen: FC<AddMealScreenProps> = observer(function AddMealSc
   };
   const addCustomMeal = async () => {
     try {
-      await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/InsertIntake`, 
+      await axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/nutritionTracker/insertFood`, 
       {FoodName:selectedCustomFood?.name,
       Cal:selectedCustomFood?.calories,
       Carb:selectedCustomFood?.carbohydrates_total_g,

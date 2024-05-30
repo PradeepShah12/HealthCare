@@ -50,23 +50,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.84,
     elevation: 5,
   },
   mealName: {
-    fontFamily: typography.primary.normal,
+    // fontFamily: typography.primary.normal,
     fontSize: 16,
     color: colors.palette.primary500,
     marginBottom: 5,
   },
   calories: {
-    fontFamily: typography.primary.normal,
+    // fontFamily: typography.primary.normal,
     fontSize: 14,
     color: colors.text
   },
