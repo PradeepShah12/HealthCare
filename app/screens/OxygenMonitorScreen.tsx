@@ -33,7 +33,7 @@ export const OxygenMonitorScreen: FC<OxygenMonitorScreenProps> = observer(functi
     const Stime= new Date("2024-05-01")
 const Etime= new Date("2024-05-31")
 
-    axios.post('https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/oxygen/getoxygen',{
+    axios.post('https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/oxygen/getoxygen',{
         UserID:UserID,
         SDate:Stime.toISOString(),
         EDate:Etime.toISOString()
@@ -75,7 +75,7 @@ const Etime= new Date("2024-05-31")
     setNewOxygenPercent(0);
 
     // Call API endpoint to insert oxygen data
-    fetch('https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/oxygen/insertoxygen', {
+    fetch('https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/oxygen/insertoxygen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

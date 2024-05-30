@@ -40,7 +40,7 @@ export const SwimmingTrackerScreen: FC<SwimmingTrackerScreenProps> = observer(fu
 const Etime= new Date("2024-05-31")
 
     try {
-      const response = await axios.post("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/swimming/getswimming", {
+      const response = await axios.post("https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/swimming/getswimming", {
         UserID: UserID, // Replace with actual user ID
         SDate:Stime.toISOString(),
         EDate:Etime.toISOString()// Replace with actual end date
@@ -72,7 +72,7 @@ const Etime= new Date("2024-05-31")
     };
 console.log(UserID,'user id')
     try {
-      const response = await axios.post("https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/swimming/insertswimming", {
+      const response = await axios.post("https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/swimming/insertswimming", {
         UserID:UserID, // Replace with actual user ID
         Duration: newSwimmingDuration,
       });

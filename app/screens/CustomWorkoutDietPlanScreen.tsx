@@ -31,7 +31,7 @@ export const CustomWorkoutDietPlanScreen: FC<CustomWorkoutDietPlanScreenProps> =
 
   const fetchPlans = () => {
     // Call the API endpoint to fetch custom workout and diet plans
-    axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/customWorkoutplan/customplan`,{
+    axios.post(`https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/customWorkoutplan/customplan`,{
       UserID:UserID,
       Weight:Weight,
       Height:Height,

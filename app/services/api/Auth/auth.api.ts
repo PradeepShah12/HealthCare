@@ -70,7 +70,7 @@ class Auth {
   async forgotPassword(body: { Email: string }) {
     console.log('forget password')
     const response = await api.post<ApiResponse<ForgotPasswordResponse>>(
-      "/user/singup/forgotpassword",
+      "/user/signup/forgotpassword",
       body,
     )
 

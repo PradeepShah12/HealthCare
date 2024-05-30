@@ -38,7 +38,7 @@ console.log(Stime.toISOString(),'time')
 
 
 const  heartRate=async()=>{
-  axios.post(`https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/getheartbeat`,{
+  axios.post(`https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/heartbeat/getheartbeat`,{
       UserID:user.UserID,
       SDate:Stime.toISOString(),
       EDate:Etime.toISOString()
@@ -73,7 +73,7 @@ const  heartRate=async()=>{
       setNewHeartRate("");
 
       // Call API endpoint to insert heart rate data
-      fetch('https://e0a9-115-64-55-67.ngrok-free.app/api/user/activity/heartbeat/insertheartbeat', {
+      fetch('https://c1b4-165-225-114-126.ngrok-free.app/api/user/activity/heartbeat/insertheartbeat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
